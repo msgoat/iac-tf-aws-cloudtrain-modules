@@ -1,0 +1,259 @@
+locals {
+  jaeger_values = <<EOT
+# Default values for jaeger.
+# This is a YAML-formatted file.
+# Jaeger values are grouped by component. Cassandra values override subchart values
+
+provisionDataStore:
+  cassandra: false
+  elasticsearch: false
+  kafka: false
+
+storage:
+  # allowed values (cassandra, elasticsearch)
+  type: elasticsearch
+  elasticsearch:
+    scheme: http
+    host: es-tracing-master
+    port: 9200
+    user: elastic
+    usePassword: false
+    password: changeme
+    # indexPrefix: test
+    ## Use existing secret (ignores previous password)
+    # existingSecret:
+    # existingSecretKey:
+    nodesWanOnly: false
+    extraEnv: []
+      ## ES related env vars to be configured on the concerned components
+      # - name: ES_SERVER_URLS
+      #   value: http://elasticsearch-master:9200
+      # - name: ES_USERNAME
+      #   value: elastic
+      # - name: ES_INDEX_PREFIX
+    #   value: test
+    ## ES related cmd line opts to be configured on the concerned components
+    cmdlineParams: {}
+      # es.server-urls: http://elasticsearch-master:9200
+      # es.username: elastic
+    # es.index-prefix: test
+
+ingester:
+  enabled: false
+
+agent:
+  podSecurityContext: {}
+  securityContext: {}
+  enabled: true
+  annotations: {}
+  image: jaegertracing/jaeger-agent
+  imagePullSecrets: []
+  pullPolicy: IfNotPresent
+  cmdlineParams: {}
+  extraEnv: []
+  daemonset:
+    useHostPort: false
+  service:
+    annotations: {}
+    type: ClusterIP
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 256m
+      memory: 128Mi
+  serviceAccount:
+    create: true
+    # Explicitly mounts the API credentials for the Service Account
+    automountServiceAccountToken: false
+    name:
+    annotations: {}
+  ## Additional pod labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  podLabels: {}
+  useHostNetwork: false
+  dnsPolicy: ClusterFirst
+  serviceMonitor:
+    enabled: true
+
+collector:
+  podSecurityContext: {}
+  securityContext: {}
+  enabled: true
+  annotations: {}
+  image: jaegertracing/jaeger-collector
+  pullPolicy: IfNotPresent
+  dnsPolicy: ClusterFirst
+  replicaCount: 1
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 2
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
+  service:
+    type: ClusterIP
+  ingress:
+    enabled: false
+  resources:
+    limits:
+      cpu: 1
+      memory: 1Gi
+    requests:
+      cpu: 500m
+      memory: 512Mi
+  serviceAccount:
+    create: true
+    annotations: {}
+  ## Additional pod labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  podLabels: {}
+  extraConfigmapMounts: []
+  # - name: jaeger-config
+  #   mountPath: /config
+  #   subPath: ""
+  #   configMap: jaeger-config
+  #   readOnly: true
+  # samplingConfig: |-
+  #   {
+  #     "service_strategies": [
+  #       {
+  #         "service": "foo",
+  #         "type": "probabilistic",
+  #         "param": 0.8,
+  #         "operation_strategies": [
+  #           {
+  #             "operation": "op1",
+  #             "type": "probabilistic",
+  #             "param": 0.2
+  #           },
+  #           {
+  #             "operation": "op2",
+  #             "type": "probabilistic",
+  #             "param": 0.4
+  #           }
+  #         ]
+  #       },
+  #       {
+  #         "service": "bar",
+  #         "type": "ratelimiting",
+  #         "param": 5
+  #       }
+  #     ],
+  #     "default_strategy": {
+  #       "type": "probabilistic",
+  #       "param": 1
+  #     }
+  #   }
+  serviceMonitor:
+    enabled: true
+
+query:
+  enabled: true
+  oAuthSidecar:
+    enabled: false
+    image: quay.io/oauth2-proxy/oauth2-proxy:v7.1.0
+    pullPolicy: IfNotPresent
+    containerPort: 4180
+    args: []
+    extraConfigmapMounts: []
+    extraSecretMounts: []
+  podSecurityContext: {}
+  securityContext: {}
+  agentSidecar:
+    enabled: true
+  annotations: {}
+  image: jaegertracing/jaeger-query
+  imagePullSecrets: []
+  pullPolicy: IfNotPresent
+  dnsPolicy: ClusterFirst
+  cmdlineParams: {}
+  extraEnv: []
+  replicaCount: 1
+  service:
+    type: ClusterIP
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: traefik
+      traefik.ingress.kubernetes.io/router.pathmatcher: PathPrefix
+    hosts:
+      - ${var.jaeger_host_name}
+    health:
+      exposed: false
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 256m
+      memory: 128Mi
+  serviceAccount:
+    create: true
+    annotations: {}
+  ## Additional pod labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  podLabels: {}
+  serviceMonitor:
+    enabled: true
+  # config: |-
+  #   {
+  #     "dependencies": {
+  #       "dagMaxNumServices": 200,
+  #       "menuEnabled": true
+  #     },
+  #     "archiveEnabled": true,
+  #     "tracking": {
+  #       "gaID": "UA-000000-2",
+  #       "trackErrors": true
+  #     }
+  #   }
+
+esIndexCleaner:
+  enabled: true
+  securityContext:
+    runAsUser: 1000
+  podSecurityContext:
+    runAsUser: 1000
+  annotations: {}
+  image: jaegertracing/jaeger-es-index-cleaner
+  imagePullSecrets: []
+  tag: latest
+  pullPolicy: Always
+  cmdlineParams: {}
+  extraEnv: []
+    # - name: ROLLOVER
+  #   value: 'true'
+  schedule: "55 23 * * *"
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  concurrencyPolicy: Forbid
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 256m
+      memory: 128Mi
+  numberOfDays: 7
+  serviceAccount:
+    create: true
+  ## Additional pod labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  podLabels: {}
+EOT
+}
+
+resource helm_release jaeger {
+  chart = "jaeger"
+  version = "0.49.0"
+  name = var.helm_release_name
+  dependency_update = true
+  atomic = true
+  cleanup_on_fail = true
+  namespace = var.kubernetes_namespace_name
+  create_namespace = true
+  repository = "https://jaegertracing.github.io/helm-charts"
+  values = [ local.jaeger_values ]
+}
