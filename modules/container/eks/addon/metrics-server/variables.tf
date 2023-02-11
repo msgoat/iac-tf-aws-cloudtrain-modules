@@ -33,8 +33,3 @@ variable "addon_enabled" {
   type        = bool
   default     = true
 }
-
-variable "eks_cluster_name" {
-  description = "Name of the target AWS EKS cluster"
-  type        = string
-}

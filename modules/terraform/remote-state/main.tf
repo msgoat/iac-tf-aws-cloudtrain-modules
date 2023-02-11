@@ -16,6 +16,7 @@ locals {
   module_common_tags = merge(var.common_tags,
   {
     ManagedBy = "Terraform"
+    TerraformModuleName = "terraform/remote-state"
   })
   s3_bucket_name = "s3-${var.region_name}-${var.solution_fqn}-${var.backend_name}"
   dynamodb_table_name = "dyn-${var.region_name}-${var.solution_fqn}-${var.backend_name}"

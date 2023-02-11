@@ -8,14 +8,11 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 4.0"
     }
-    helm = {
-      version = "~> 2.0"
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.0"
     }
   }
-}
-
-provider aws {
-  region = var.region_name
 }
 
 data aws_region current {
@@ -31,6 +28,6 @@ data aws_caller_identity current {
 }
 
 locals {
-  module_common_tags = var.common_tags
+  module_common_tags = merge(var.common_tags, { TerraformModuleName = "container/eks/cluster" })
 }
 

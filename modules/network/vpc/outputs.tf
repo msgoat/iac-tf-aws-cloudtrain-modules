@@ -10,11 +10,5 @@ output "vpc_name" {
 
 output "subnets" {
   description = "Information about created subnets"
-  value = [for sn in aws_subnet.subnets : {
-    subnet_name          = sn.tags["Name"]
-    subnet_id            = sn.id
-    subnet_template_name = sn.tags["TemplateName"]
-    zone_name            = sn.availability_zone
-    accessibility        = sn.tags["Accessibility"]
-  }]
+  value = local.subnet_infos
 }

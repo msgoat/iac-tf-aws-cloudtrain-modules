@@ -64,3 +64,15 @@ resource "aws_subnet" "subnets" {
     Accessibility = each.value.accessibility
   }, each.value.tags, local.module_common_tags)
 }
+
+locals {
+  subnet_infos = [
+    for sn in aws_subnet.subnets : {
+      subnet_name          = sn.tags["Name"]
+      subnet_id            = sn.id
+      subnet_template_name = sn.tags["TemplateName"]
+      zone_name            = sn.availability_zone
+      accessibility        = sn.tags["Accessibility"]
+    }
+  ]
+}

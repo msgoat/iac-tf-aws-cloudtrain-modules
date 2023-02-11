@@ -1,5 +1,11 @@
+locals {
+  control_plane_role_name_origin = "role-${local.eks_cluster_name}-control-plane"
+  control_plane_role_name_random = "role-${var.region_name}-eks-${random_uuid.control_plane_role.result}"
+  control_plane_role_name = length(local.control_plane_role_name_origin) <= 64 ? local.control_plane_role_name_origin : local.control_plane_role_name_random
+}
+
 resource aws_iam_role control_plane {
-  name = "role-${local.eks_cluster_name}-control-plane"
+  name = local.control_plane_role_name
   assume_role_policy = <<POLICY
 {
   "Version": "2012-10-17",
@@ -15,7 +21,8 @@ resource aws_iam_role control_plane {
 }
 POLICY
   tags = merge({
-    Name = "role-${local.eks_cluster_name}-control-plane"
+    Name = local.control_plane_role_name
+    OwnedBy = local.eks_cluster_name
   }, local.module_common_tags)
 }
 
@@ -69,4 +76,9 @@ resource aws_iam_role_policy elb_permissions {
     ]
 }
 POLICY
+}
+
+# Create a random uuid for the control plane instance role name
+resource random_uuid control_plane_role {
+
 }
