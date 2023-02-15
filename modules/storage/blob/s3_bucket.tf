@@ -4,6 +4,7 @@ locals {
 
 // create s3 bucket as container for blobs
 resource aws_s3_bucket blob {
+  bucket = local.s3_bucket_name
   tags = merge({Name = local.s3_bucket_name}, local.module_common_tags)
 }
 
