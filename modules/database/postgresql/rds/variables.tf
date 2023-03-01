@@ -56,6 +56,12 @@ variable db_max_storage_size {
   default = 30
 }
 
+variable db_storage_type {
+  description = "EBS storage type used for th PostgreSQL instance"
+  type = string
+  default = "gp2"
+}
+
 variable postgresql_version {
   description = "PostgreSQL version"
   type = string

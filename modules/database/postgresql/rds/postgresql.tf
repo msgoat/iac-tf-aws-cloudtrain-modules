@@ -12,7 +12,7 @@ resource aws_db_instance postgresql {
   allow_major_version_upgrade = false
   auto_minor_version_upgrade = true
   instance_class = var.db_instance_class
-  storage_type = "gp2"
+  storage_type = var.db_storage_type
   allocated_storage = var.db_min_storage_size
   max_allocated_storage = var.db_max_storage_size
   storage_encrypted = true
