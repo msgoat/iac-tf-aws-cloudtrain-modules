@@ -2,6 +2,7 @@ locals {
   # make sure that random user name does not start with a digit
   db_master_user_name = length(regexall("^[[:digit:]]", random_string.db_user.result)) > 0 ? "pg${random_string.db_user.result}" : random_string.db_user.result
   db_instance_name = "postgres-${var.region_name}-${var.solution_fqn}-${var.db_instance_name}"
+  final_db_snapshot_name = var.final_db_snapshot_enabled ? "snap-${local.db_instance_name}" : null
 }
 
 resource aws_db_instance postgresql {
@@ -19,7 +20,9 @@ resource aws_db_instance postgresql {
   backup_retention_period = 7
   # backup_window = "22:00-23:59"
   delete_automated_backups = true
-  skip_final_snapshot = true
+  skip_final_snapshot = !var.final_db_snapshot_enabled
+  final_snapshot_identifier = local.final_db_snapshot_name
+  snapshot_identifier = var.db_snapshot_id
   # maintenance_window = "00:00-06:00"
   copy_tags_to_snapshot = true
   username =  local.db_master_user_name

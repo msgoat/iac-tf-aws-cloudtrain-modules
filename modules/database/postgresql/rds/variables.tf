@@ -41,7 +41,7 @@ variable db_database_name {
 variable db_instance_class {
   description = "Instance type of virtual machine running the PostgreSQL instance"
   type = string
-  default = "db.t3.micro"
+  default = "db.t4g.micro"
 }
 
 variable db_min_storage_size {
@@ -59,13 +59,13 @@ variable db_max_storage_size {
 variable db_storage_type {
   description = "EBS storage type used for th PostgreSQL instance"
   type = string
-  default = "gp2"
+  default = "gp3"
 }
 
 variable postgresql_version {
   description = "PostgreSQL version"
   type = string
-  default = "13.6"
+  default = "14.6"
 }
 
 variable vpc_id {
@@ -82,4 +82,16 @@ variable generate_url_friendly_password {
   description = "Generates URL-friendly database passwords without special characters, if set to true"
   type = bool
   default = false
+}
+
+variable db_snapshot_id {
+  description = "Optional unique identifier of a previously created final snapshot the PostgreSQL instance should be restored from"
+  type = string
+  default = null
+}
+
+variable final_db_snapshot_enabled {
+  description = "Controls if a final snapshot should be created before the PostgreSQL instance is deleted; default is `true`"
+  type = bool
+  default = true
 }
