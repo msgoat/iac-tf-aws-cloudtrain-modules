@@ -8,10 +8,15 @@ resource "aws_internet_gateway" "igw" {
   tags   = merge({ Name = local.igw_name }, local.module_common_tags)
 }
 
-# create a route that routes all internet-bound traffic from public subnets to the internet gateway
+locals {
+  igw_route_table_keys = [ for k, v in local.subnets_by_keys : k if v.accessibility == "public"]
+}
+
+# add a route to the route tables of all public subnets that routes all internet-bound traffic
+# through the internet gateway
 resource "aws_route" "igw" {
-  for_each               = local.public_route_tables
-  route_table_id         = aws_route_table.public[each.key].id
+  for_each               = toset(local.igw_route_table_keys)
+  route_table_id         = aws_route_table.this[each.value].id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.igw.id
 }

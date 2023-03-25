@@ -49,11 +49,12 @@ variable "nat_strategy" {
   type        = string
 }
 
-variable "subnets" {
-  description = "Specifications of subnets to be created in each availability zone the VPC is supposed to span"
+variable "subnet_templates" {
+  description = "Templates for subnets to be created in each availability zone the VPC is supposed to span"
   type = list(object({
-    subnet_name   = string      # subnet name
+    name   = string             # subnet template name
     accessibility = string      # accessibility of the subnet ("public" or "private")
+    role          = string      # role or responsibility of the subnet; can be used to find all subnets with matching roles
     newbits       = number      # additional bits to extend the prefix of this subnet
     tags          = map(string) # Tags to be attached to the subnet
   }))
