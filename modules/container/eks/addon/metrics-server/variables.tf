@@ -28,8 +28,20 @@ variable "common_tags" {
   type        = map(string)
 }
 
-variable "addon_enabled" {
-  description = "Controls if this addon is actually activated"
-  type        = bool
-  default     = true
+variable "kubernetes_namespace_name" {
+  description = "Name of the Kubernetes namespace which should host the metrics-server"
+  type = string
+  default = "kube-system"
+}
+
+variable "helm_release_name" {
+  description = "Name of the Helm release"
+  type = string
+  default = "metrics-server"
+}
+
+variable "helm_chart_version" {
+  description = "Version of the Helm chart"
+  type = string
+  default = "3.9.0"
 }
