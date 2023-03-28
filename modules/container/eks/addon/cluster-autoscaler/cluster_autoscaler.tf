@@ -55,7 +55,8 @@ rbac:
   clusterScoped: true
   serviceAccount:
     # rbac.serviceAccount.annotations -- Additional Service Account annotations.
-    annotations: {}
+    annotations:
+      eks.amazonaws.com/role-arn: "${aws_iam_role.cluster_autoscaler.arn}"
     # rbac.serviceAccount.create -- If `true` and `rbac.create` is also true, a Service Account will be created.
     create: true
     # rbac.serviceAccount.name -- The name of the ServiceAccount to use. If not set and create is `true`, a name is generated using the fullname template.
@@ -99,12 +100,12 @@ EOT
 resource "helm_release" "autoscaler" {
   chart             = "cluster-autoscaler"
   repository        = "https://kubernetes.github.io/autoscaler"
-  name              = "cluster-autoscaler"
-  version           = "9.16.2"
+  name              = var.helm_release_name
+  version           = var.helm_chart_version
   dependency_update = true
   atomic            = true
   cleanup_on_fail   = true
-  namespace         = "kube-system"
+  namespace         = var.kubernetes_namespace_name
   values            = [ local.autoscaler_values ]
   depends_on        = [ aws_iam_role_policy.cluster_autoscaler ]
 }

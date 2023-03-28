@@ -28,13 +28,25 @@ variable "common_tags" {
   type        = map(string)
 }
 
-variable "addon_enabled" {
-  description = "Controls if this addon is actually activated"
-  type        = bool
-  default     = true
-}
-
 variable "eks_cluster_name" {
   description = "Name of the target AWS EKS cluster"
   type        = string
+}
+
+variable "kubernetes_namespace_name" {
+  description = "Name of the Kubernetes namespace which should host the metrics-server"
+  type = string
+  default = "kube-system"
+}
+
+variable "helm_release_name" {
+  description = "Name of the Helm release"
+  type = string
+  default = "aws-cluster-autoscaler"
+}
+
+variable "helm_chart_version" {
+  description = "Version of the Helm chart"
+  type = string
+  default = "9.27.0"
 }
