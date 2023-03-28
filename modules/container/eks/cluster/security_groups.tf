@@ -2,7 +2,7 @@ resource aws_security_group cluster_shared_node {
   count = var.loadbalancer_security_group_enabled ? 1 : 0
   name = "sec-${local.eks_cluster_name}-cluster-shared-node"
   description = "controls traffic between worker nodes"
-  vpc_id = data.aws_subnet.node_group[0].vpc_id
+  vpc_id = var.vpc_id
   tags = merge({
     Name = "sg-${local.eks_cluster_name}-cluster-shared-node"
   }, local.module_common_tags)
@@ -34,7 +34,7 @@ resource aws_security_group lb_to_ingress {
   count = var.loadbalancer_security_group_enabled ? 1 : 0
   name = "sec-${local.eks_cluster_name}-lb-to-ingress"
   description = "controls traffic between external loadbalancer and ingress controller"
-  vpc_id = data.aws_subnet.node_group[0].vpc_id
+  vpc_id = var.vpc_id
   tags = merge({
     Name = "sg-${local.eks_cluster_name}-lb-to-ingress"
   }, local.module_common_tags)
