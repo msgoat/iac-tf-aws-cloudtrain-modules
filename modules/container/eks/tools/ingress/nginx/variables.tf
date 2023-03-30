@@ -29,9 +29,9 @@ variable common_tags {
 }
 
 variable default_ingress_class {
-  description = "Controls if Traefik is the default ingress controller on this cluster; default: true"
+  description = "Controls if NGinX is the default ingress controller on this cluster; default: false"
   type = bool
-  default = true
+  default = false
 }
 
 variable eks_cluster_name {
@@ -42,41 +42,41 @@ variable eks_cluster_name {
 variable kubernetes_namespace_name {
   description = "Name of the Kubernetes namespace to deploy to"
   type = string
-  default = "ingress-traefik"
+  default = "ingress-nginx"
 }
 
 variable helm_release_name {
-  description = "Name of the Helm release which deploys Traefik"
+  description = "Name of the Helm release which deploys NGINX"
   type = string
-  default = "traefik"
+  default = "ingress-nginx"
 }
 
 variable helm_chart_version {
-  description = "Version of the Helm chart which deploys Traefik"
+  description = "Version of the Helm chart which deploys NGINX"
   type = string
-  default = "traefik"
+  default = "4.6.0"
 }
 
 variable replica_count {
-  description = "Number of replicas running Traefik"
+  description = "Number of replicas running NGINX"
   type = number
   default = 2
 }
 
-variable use_aws_load_balancer_controller {
-  description = "Controls if Traefik should use the AWS Load Balancer Controller to expose its endpoints"
-  type = bool
-  default = false
-}
-
-variable aws_load_balancer_strategy {
-  description = "Strategy to use when exposing Traefik's endpoints; possible values are `SERVICE_VIA_NLB` or `INGRESS_VIA_ALB`"
+variable load_balancer_strategy {
+  description = "Strategy to use when exposing NGINX's endpoints; possible values are `SERVICE_VIA_NODE_PORT`, `SERVICE_VIA_NLB` or `INGRESS_VIA_ALB`"
   type = string
-  default = "INGRESS_VIA_ALB"
+  default = "SERVICE_VIA_NODE_PORT"
 }
 
 variable tls_certificate_arn {
-  description = "ARN of a TLS certificate managed by AWS Certificate Manager; required if `use_aws_load_balancer_controller` is true"
+  description = "ARN of a TLS certificate managed by AWS Certificate Manager; required if `load_balancer_strategy` is either `SERVICE_VIA_NLB` or `INGRESS_VIA_ALB`"
+  type = string
+  default = ""
+}
+
+variable host_name {
+  description = "Host name of requests supposed to be forwarded to the ingress controller; required if `load_balancer_strategy` is `INGRESS_VIA_ALB`"
   type = string
   default = ""
 }
