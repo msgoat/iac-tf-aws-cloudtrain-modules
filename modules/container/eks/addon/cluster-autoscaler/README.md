@@ -2,7 +2,7 @@
 
 Terraform module to install the [Kubernetes Cluster Autoscaler](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler) on any given AWS EKS cluster.
 
-By default, the cluster autoscaler is installed in namespace `kube-system` running with `2` replicas.
+By default, the cluster autoscaler is installed in namespace `aws-system` running with `2` replicas.
 
 ## Prerequisites
 

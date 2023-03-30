@@ -106,6 +106,7 @@ resource "helm_release" "autoscaler" {
   atomic            = true
   cleanup_on_fail   = true
   namespace         = var.kubernetes_namespace_name
+  create_namespace  = true
   values            = [ local.autoscaler_values ]
   depends_on        = [ aws_iam_role_policy.cluster_autoscaler ]
 }

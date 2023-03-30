@@ -36,7 +36,7 @@ variable "eks_cluster_name" {
 variable "kubernetes_namespace_name" {
   description = "Name of the Kubernetes namespace which should host the metrics-server"
   type = string
-  default = "kube-system"
+  default = "aws-system"
 }
 
 variable "helm_release_name" {
