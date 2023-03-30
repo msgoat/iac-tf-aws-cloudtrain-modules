@@ -8,13 +8,13 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 4.0"
     }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 2.0"
+    }
   }
 }
 
 locals {
-  module_common_tags = var.common_tags
-}
-
-data aws_caller_identity current {
-
+  module_common_tags = merge(var.common_tags, { TerraformModuleName = "container/eks/addon/aws-ebs-csi-driver" })
 }

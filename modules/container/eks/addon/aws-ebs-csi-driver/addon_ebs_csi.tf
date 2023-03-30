@@ -1,11 +1,18 @@
 locals {
-  oidc_provider_id = replace(data.aws_eks_cluster.given.identity[0].oidc[0].issuer, "https://", "")
+  addon_name = "aws-ebs-csi-driver"
+}
+
+data aws_eks_addon_version aws_ebs_csi {
+  addon_name = local.addon_name
+  kubernetes_version = data.aws_eks_cluster.given.version
+  most_recent = true
 }
 
 resource aws_eks_addon aws_ebs_csi {
-  addon_name = "aws-ebs-csi-driver"
+  addon_name = local.addon_name
   cluster_name = data.aws_eks_cluster.given.name
   service_account_role_arn = aws_iam_role.aws_ebs_csi_driver.arn
+  addon_version = data.aws_eks_addon_version.aws_ebs_csi.version
   tags = merge({
     Name = "${data.aws_eks_cluster.given.name}-aws-ebs-csi"
   }, local.module_common_tags)
@@ -20,7 +27,7 @@ resource aws_iam_role aws_ebs_csi_driver {
     {
       "Effect": "Allow",
       "Principal": {
-        "Federated": "arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${local.oidc_provider_id}"
+        "Federated": "${local.oidc_provider_arn}"
       },
       "Action": "sts:AssumeRoleWithWebIdentity",
       "Condition": {
