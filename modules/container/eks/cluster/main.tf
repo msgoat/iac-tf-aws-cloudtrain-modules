@@ -15,15 +15,15 @@ terraform {
   }
 }
 
-data aws_region current {
+data "aws_region" "current" {
   name = var.region_name
 }
 
-data aws_availability_zones available_zones {
+data "aws_availability_zones" "available_zones" {
   state = "available"
 }
 
-data aws_caller_identity current {
+data "aws_caller_identity" "current" {
 
 }
 
