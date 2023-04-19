@@ -15,5 +15,5 @@ terraform {
 
 # Local values used in this module
 locals {
-  module_common_tags = merge(var.common_tags, { TerraformModuleName = "dns/hosted-zone" })
+  module_common_tags = merge(var.common_tags, { TerraformModuleName = "dns/record-for-alb" })
 }

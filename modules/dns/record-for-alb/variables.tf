@@ -28,14 +28,13 @@ variable "alb_arn" {
   type        = string
 }
 
-variable "dns_name" {
-  description = "DNS name of the given load balancer."
+variable "domain_name" {
+  description = "Domain name of the given load balancer."
   type        = string
 }
 
 variable "hosted_zone_name" {
-  description = "Name of the hosted zone supposed to own the new DNS record; if empty the hosted zone is derived from the given `dns_name`."
+  description = "Name of the hosted zone supposed to own the new DNS record."
   type        = string
-  default     = ""
 }
 

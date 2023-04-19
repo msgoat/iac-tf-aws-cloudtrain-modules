@@ -1,5 +1,5 @@
 resource aws_route53_record this {
-  name = var.dns_name
+  name = var.domain_name
   zone_id = data.aws_route53_zone.owner.id
   type = "A"
   alias {
