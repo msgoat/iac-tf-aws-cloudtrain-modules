@@ -33,8 +33,17 @@ variable eks_cluster_name {
   type = string
 }
 
-variable addon_aws_ebs_csi_enabled {
-  description = "Controls if the AWS EBS CSI Driver addon is actually activated; default: true"
+variable "hosted_zone_name" {
+  description = "Name of a public hosted zone managed by Route53 supposed contain all public DNS records to route traffic to the AWS EKS cluster"
+  type = string
+}
+
+variable "letsencrypt_account_name" {
+  description = "Lets Encrypt Account name to be used to request certificates"
+  type = string
+}
+
+variable "cert_manager_enabled" {
+  description = "Controls if the AWS Load Controller relies on cert-manager to create the initial certificates"
   type = bool
-  default = true
 }
