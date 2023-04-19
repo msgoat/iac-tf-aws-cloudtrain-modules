@@ -91,7 +91,7 @@ podLabels: {}
 additionalLabels: {}
 
 # Enable cert-manager
-enableCertManager: false
+enableCertManager: ${var.cert_manager_enabled}
 
 # The name of the Kubernetes cluster. A non-empty value is required
 clusterName: ${var.eks_cluster_name}

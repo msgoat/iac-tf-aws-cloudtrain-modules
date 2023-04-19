@@ -56,3 +56,9 @@ variable "replica_count" {
   type = number
   default = 2
 }
+
+variable "cert_manager_enabled" {
+  description = "Controls if the AWS Load Controller relies on cert-manager to create the initial certificates"
+  type = bool
+  default = false
+}
