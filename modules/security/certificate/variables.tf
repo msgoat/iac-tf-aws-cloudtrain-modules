@@ -37,3 +37,9 @@ variable "alternative_domain_names" {
   description = "Alternative DNS domain names the certificate should cover (e.g. subdomain wildcards)."
   type        = list(string)
 }
+
+variable "hosted_zone_name" {
+  description = "Name of a Route53 hosted zone which manages all DNS records for the given `domain_name`."
+  type        = string
+}
+
