@@ -1,4 +1,4 @@
-# eks/addon/metrics-server 
+# container/eks/addon/metrics-server 
 
 Terraform module to install the [Kubernetes Metrics Server](https://github.com/kubernetes-sigs/metrics-server) on any given AWS EKS cluster.
 
