@@ -10,7 +10,7 @@ module "vpc" {
   solution_stage        = var.solution_stage
   solution_fqn          = var.solution_fqn
   zones_to_span         = var.zones_to_span
-  subnets = [
+  subnet_templates = [
     {
       subnet_name   = "web"
       accessibility = "public"
