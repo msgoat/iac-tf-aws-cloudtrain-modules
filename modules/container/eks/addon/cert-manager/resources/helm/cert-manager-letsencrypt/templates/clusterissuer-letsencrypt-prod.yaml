@@ -1,0 +1,17 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: {{ include "cert-manager-letsencrypt.fullname" . }}-prod
+  labels:
+    {{- include "cert-manager-letsencrypt.labels" . | nindent 4 }}
+spec:
+  acme:
+    email: {{ .Values.letsencrypt.acme.email }}
+    server: {{ .Values.letsencrypt.acme.server.prod }}
+    privateKeySecretRef:
+      name: {{ include "cert-manager-letsencrypt.fullname" . }}-prod
+    solvers:
+    - dns01:
+        route53:
+          region: {{ .Values.letsencrypt.acme.route53.region }}
+          hostedZoneID: {{ .Values.letsencrypt.acme.route53.hostedZoneId }}

@@ -1,0 +1,6 @@
+apiVersion: v2
+name: cert-manager-letsencrypt
+description: Adds LetsEncrypt as an cluster issuer to an existing cert-manager release
+type: application
+version: 0.1.0
+appVersion: "0.1.0"

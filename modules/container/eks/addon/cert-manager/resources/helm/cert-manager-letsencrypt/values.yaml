@@ -1,0 +1,11 @@
+letsencrypt:
+  acme:
+    email: replace_me@example.com
+    server:
+      staging: https://acme-staging-v02.api.letsencrypt.org/directory
+      prod: https://acme-v02.api.letsencrypt.org/directory
+    dnsZones:
+      - replace_me.org
+    route53:
+      region: eu-central-1
+      hostedZoneId: replace_me
