@@ -1,10 +1,14 @@
+locals {
+  alb_name = "alb-${var.region_name}-${var.solution_fqn}-eks"
+}
+
 resource kubernetes_ingress_v1 nginx {
   count = var.load_balancer_strategy == "INGRESS_VIA_ALB" ? 1 : 0
   metadata {
     name = "${var.helm_release_name}-controller"
     annotations = {
       "alb.ingress.kubernetes.io/scheme" = "internet-facing"
-      "alb.ingress.kubernetes.io/load-balancer-name" = "alb-${var.region_name}-${var.solution_fqn}-eks"
+      "alb.ingress.kubernetes.io/load-balancer-name" = local.alb_name
       "alb.ingress.kubernetes.io/target-type" = "ip"
       "alb.ingress.kubernetes.io/backend-protocol" = "HTTP"
       "alb.ingress.kubernetes.io/healthcheck-protocol" = "HTTP"
@@ -46,4 +50,11 @@ resource kubernetes_ingress_v1 nginx {
     }
   }
   depends_on = [ helm_release.nginx ]
+  wait_for_load_balancer = true
+}
+
+data aws_alb this {
+  count = var.load_balancer_strategy == "INGRESS_VIA_ALB" ? 1 : 0
+  name = local.alb_name
+  depends_on = [ kubernetes_ingress_v1.nginx[0] ]
 }

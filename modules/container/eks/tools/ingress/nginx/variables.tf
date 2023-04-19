@@ -80,3 +80,9 @@ variable host_name {
   type = string
   default = ""
 }
+
+variable "cert_manager_enabled" {
+  description = "Controls if the AWS Load Controller relies on cert-manager to create the initial certificates"
+  type = bool
+  default = false
+}

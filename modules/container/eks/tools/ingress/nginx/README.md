@@ -1,4 +1,4 @@
-# container/tools/ingress/nginx 
+# container/eks/tools/ingress/nginx 
 
 Terraform module to install the [NGinX Ingress Controller](https://kubernetes.github.io/ingress-nginx/) on any given AWS EKS cluster.
 

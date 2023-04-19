@@ -557,7 +557,7 @@ controller:
         fsGroup: 2000
     # Use certmanager to generate webhook certs
     certManager:
-      enabled: false
+      enabled: ${var.cert_manager_enabled}
       # self-signed root certificate
       rootCert:
         # default to be 5y
