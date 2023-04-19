@@ -1,32 +1,32 @@
 # variables.tf
 
-variable region_name {
+variable "region_name" {
   description = "The AWS region to deploy into (e.g. eu-central-1)."
-  type = string
+  type        = string
 }
 
-variable solution_name {
+variable "solution_name" {
   description = "The name of the solution that owns all AWS resources."
-  type = string
+  type        = string
 }
 
-variable solution_stage {
+variable "solution_stage" {
   description = "The name of the current environment stage."
-  type = string
+  type        = string
 }
 
-variable solution_fqn {
+variable "solution_fqn" {
   description = "The fully qualified name of the solution (i.e. solution_name + solution_stage in most cases)."
-  type = string
+  type        = string
 }
 
-variable common_tags {
+variable "common_tags" {
   description = "Common tags to be attached to all AWS resources."
-  type = map(string)
+  type        = map(string)
 }
 
-variable backend_name {
+variable "backend_name" {
   description = "Name of the Terraform backend"
-  type = string
-  default = "terraform"
+  type        = string
+  default     = "terraform"
 }

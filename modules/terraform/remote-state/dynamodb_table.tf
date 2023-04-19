@@ -1,5 +1,5 @@
-resource aws_dynamodb_table backend {
-  name = local.dynamodb_table_name
+resource "aws_dynamodb_table" "backend" {
+  name     = local.dynamodb_table_name
   hash_key = "LockID"
   attribute {
     name = "LockID"
@@ -9,5 +9,5 @@ resource aws_dynamodb_table backend {
   server_side_encryption {
     enabled = true
   }
-  tags = merge({Name = local.dynamodb_table_name}, local.module_common_tags)
+  tags = merge({ Name = local.dynamodb_table_name }, local.module_common_tags)
 }

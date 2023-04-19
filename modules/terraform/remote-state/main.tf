@@ -14,26 +14,30 @@ terraform {
 # Local values used in this module
 locals {
   module_common_tags = merge(var.common_tags,
-  {
-    ManagedBy = "Terraform"
-    TerraformModuleName = "terraform/remote-state"
+    {
+      ManagedBy           = "Terraform"
+      TerraformModuleName = "terraform/remote-state"
   })
-  s3_bucket_name = "s3-${var.region_name}-${var.solution_fqn}-${var.backend_name}"
+  s3_bucket_name      = "s3-${var.region_name}-${var.solution_fqn}-${var.backend_name}"
   dynamodb_table_name = "dyn-${var.region_name}-${var.solution_fqn}-${var.backend_name}"
 }
 
-data aws_region current {
+data "aws_region" "current" {
   name = var.region_name
+}
+
+data "aws_caller_identity" "current" {
+
 }
 
 locals {
   terraform_backend_file = templatefile("${path.module}/resources/terraform_backend.template.tf", {
-    tf_s3_bucket_name = local.s3_bucket_name
+    tf_s3_bucket_name      = local.s3_bucket_name
     tf_dynamodb_table_name = local.dynamodb_table_name
-    tf_state_key_name = "${var.solution_name}/${var.solution_stage}/terraform.tfstate"
+    tf_state_key_name      = "${var.solution_name}/${var.solution_stage}/terraform.tfstate"
   })
   terragrunt_remote_state_block = templatefile("${path.module}/resources/terragrunt_remote_state_block.template.hcl", {
-    tf_s3_bucket_name = local.s3_bucket_name
+    tf_s3_bucket_name      = local.s3_bucket_name
     tf_dynamodb_table_name = local.dynamodb_table_name
   })
 }
