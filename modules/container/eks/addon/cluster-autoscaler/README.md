@@ -1,4 +1,4 @@
-# eks/addon/cluster-autoscaler 
+# container/eks/addon/cluster-autoscaler 
 
 Terraform module to install the [Kubernetes Cluster Autoscaler](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler) on any given AWS EKS cluster.
 
