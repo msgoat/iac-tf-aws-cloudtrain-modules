@@ -52,9 +52,3 @@ resource kubernetes_ingress_v1 nginx {
   depends_on = [ helm_release.nginx ]
   wait_for_load_balancer = true
 }
-
-data aws_alb this {
-  count = var.load_balancer_strategy == "INGRESS_VIA_ALB" ? 1 : 0
-  name = local.alb_name
-  depends_on = [ kubernetes_ingress_v1.nginx[0] ]
-}
