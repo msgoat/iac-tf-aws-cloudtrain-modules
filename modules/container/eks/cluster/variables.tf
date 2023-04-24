@@ -48,6 +48,12 @@ variable "vpc_id" {
   type        = string
 }
 
+variable "zones_to_span" {
+  description = "Number of availability zones the AWS EKS cluster is supposed to span; by default, all available availability zones are spanned"
+  type        = number
+  default     = 0
+}
+
 variable "node_group_subnet_ids" {
   description = "Unique identifiers of all subnets to host EKS cluster nodes assuming one subnet per AZ to span"
   type        = list(string)

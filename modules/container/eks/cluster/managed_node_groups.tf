@@ -14,7 +14,7 @@ locals {
     labels                   = ngt.labels
     taints                   = ngt.taints
   }]
-  multi_single_az_node_group_templates = [for i, pair in setproduct(local.single_multi_az_node_group_templates, var.node_group_subnet_ids) : {
+  multi_single_az_node_group_templates = [for i, pair in setproduct(local.single_multi_az_node_group_templates, local.zone_names) : {
     node_group_key           = "${pair[0].node_group_key}-${pair[1]}"
     node_group_template_name = pair[0].node_group_template_name
     kubernetes_version       = pair[0].kubernetes_version
@@ -24,7 +24,7 @@ locals {
     disk_size                = pair[0].disk_size
     capacity_type            = pair[0].capacity_type
     instance_types           = pair[0].instance_types
-    subnet_ids               = [pair[1]]
+    subnet_ids               = [var.node_group_subnet_ids[i]]
     labels                   = pair[0].labels
     taints                   = pair[0].taints
   }]
