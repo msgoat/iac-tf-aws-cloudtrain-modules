@@ -64,7 +64,7 @@ variable replica_count {
 }
 
 variable load_balancer_strategy {
-  description = "Strategy to use when exposing NGINX's endpoints; possible values are `SERVICE_VIA_NODE_PORT`, `SERVICE_VIA_NLB` or `INGRESS_VIA_ALB`"
+  description = "Strategy to use when exposing NGINX's endpoints; possible values are `SERVICE_VIA_NODE_PORT`, `SERVICE_VIA_NLB`, `SERVICE_VIA_TARGET_GROUP_BINDING` or `INGRESS_VIA_ALB`"
   type = string
   default = "SERVICE_VIA_NODE_PORT"
 }
@@ -75,8 +75,20 @@ variable tls_certificate_arn {
   default = ""
 }
 
+variable target_group_arn {
+  description = "ARN of an existing target group attached to a previously created AWS load balancer; required if `load_balancer_strategy` is `SERVICE_VIA_TARGET_GROUP_BINDING`"
+  type = string
+  default = ""
+}
+
 variable host_name {
   description = "Host name of requests supposed to be forwarded to the ingress controller; required if `load_balancer_strategy` is `INGRESS_VIA_ALB`"
   type = string
   default = ""
+}
+
+variable "cert_manager_enabled" {
+  description = "Controls if the AWS Load Controller relies on cert-manager to create the initial certificates"
+  type = bool
+  default = false
 }
