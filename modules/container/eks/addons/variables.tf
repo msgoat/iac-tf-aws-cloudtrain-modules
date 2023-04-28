@@ -47,3 +47,8 @@ variable "cert_manager_enabled" {
   description = "Controls if the AWS Load Controller relies on cert-manager to create the initial certificates"
   type = bool
 }
+
+variable eks_cluster_admin_role_names {
+  description = "IAM role names to be added as system:masters to aws_auth config map"
+  type = list(string)
+}
