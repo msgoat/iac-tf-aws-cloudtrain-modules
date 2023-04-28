@@ -28,28 +28,12 @@ variable common_tags {
   type = map(string)
 }
 
-variable loadbalancer_id {
-  description = "Unique identifier of the Application Load Balancer to add the new routes to"
+variable eks_cluster_name {
+  description = "Name of the target AWS EKS cluster"
   type = string
 }
 
-variable loadbalancer_target_group_id {
-  description = "Unique identifier of the Application Load Balancer to forward to"
-  type = string
+variable eks_cluster_admin_role_names {
+  description = "IAM role names to be added as system:masters to aws_auth config map"
+  type = list(string)
 }
-
-variable public_dns_zone_name {
-  description = "Public hosted zone to add the new DNS records to"
-  type = string
-  default = ""
-}
-
-variable routes {
-  description = "List of routes to be added to the given Application Load Balancer"
-  type = list(object({
-    name = string
-    host_name = string
-    path = string
-  }))
-}
-
