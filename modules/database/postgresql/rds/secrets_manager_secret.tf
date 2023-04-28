@@ -11,8 +11,8 @@ resource aws_secretsmanager_secret postgres {
 
 locals {
   secret_value = {
-    postgresql-user = aws_db_instance.postgresql.username
-    postgresql-password = aws_db_instance.postgresql.password
+    postgresql-user = local.db_master_user_name
+    postgresql-password = random_password.db_password.result
   }
 }
 

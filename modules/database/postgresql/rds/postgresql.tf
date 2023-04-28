@@ -34,9 +34,4 @@ resource aws_db_instance postgresql {
   tags = merge({
     Name = local.db_instance_name
   }, local.module_common_tags)
-  depends_on = [
-    # postgres creation seems to be related to secret creation
-    aws_secretsmanager_secret.postgres,
-    aws_secretsmanager_secret_version.postgres
-  ]
 }
