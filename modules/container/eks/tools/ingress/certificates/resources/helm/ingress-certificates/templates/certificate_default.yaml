@@ -1,0 +1,33 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ include "ingress-certificates.fullname" . }}-default
+  labels:
+    {{- include "ingress-certificates.labels" . | nindent 4 }}
+spec:
+  secretName: {{ include "ingress-certificates.fullname" . }}-default-tls
+  secretTemplate:
+    labels:
+      {{- include "ingress-certificates.labels" . | nindent 6 }}
+  duration: 2160h # 90d
+  renewBefore: 360h # 15d
+  subject:
+    {{- range .Values.ingress.certificates.organizations }}
+    organizations:
+      - {{ . |  quote }}
+    {{- end }}
+  isCA: false
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 2048
+  usages:
+    - server auth
+    - client auth
+  {{- range .Values.ingress.certificates.dnsNames }}
+  dnsNames:
+    - {{ . |  quote }}
+  {{- end }}
+  issuerRef:
+    name: {{ .Values.ingress.certificates.issuer }}
+    kind: ClusterIssuer

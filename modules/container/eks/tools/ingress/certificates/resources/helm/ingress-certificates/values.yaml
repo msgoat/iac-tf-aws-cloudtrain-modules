@@ -1,0 +1,11 @@
+ingress:
+  certificates:
+    # Names of organizations owning the certificate (required)
+    organizations: []
+    #  - example.com
+    # DNS names the certificate should cover (required)
+    dnsNames: []
+    # - example.com
+    # - www.example.com
+    issuer:
+      name: letsencrypt-staging

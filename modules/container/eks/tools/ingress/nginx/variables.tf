@@ -64,13 +64,19 @@ variable replica_count {
 }
 
 variable load_balancer_strategy {
-  description = "Strategy to use when exposing NGINX's endpoints; possible values are `SERVICE_VIA_NODE_PORT`, `SERVICE_VIA_NLB` or `INGRESS_VIA_ALB`"
+  description = "Strategy to use when exposing NGINX's endpoints; possible values are `SERVICE_VIA_NODE_PORT`, `SERVICE_VIA_NLB`, `SERVICE_VIA_TARGET_GROUP_BINDING` or `INGRESS_VIA_ALB`"
   type = string
   default = "SERVICE_VIA_NODE_PORT"
 }
 
 variable tls_certificate_arn {
   description = "ARN of a TLS certificate managed by AWS Certificate Manager; required if `load_balancer_strategy` is either `SERVICE_VIA_NLB` or `INGRESS_VIA_ALB`"
+  type = string
+  default = ""
+}
+
+variable target_group_arn {
+  description = "ARN of an existing target group attached to a previously created AWS load balancer; required if `load_balancer_strategy` is `SERVICE_VIA_TARGET_GROUP_BINDING`"
   type = string
   default = ""
 }

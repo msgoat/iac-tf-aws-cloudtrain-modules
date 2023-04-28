@@ -8,10 +8,13 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 4.0"
     }
+    helm = {
+      version = "~> 2.0"
+    }
   }
 }
 
 locals {
-  route_template_keys = [ for r in var.routes : r.name ]
-  route_templates = zipmap(local.route_template_keys, var.routes)
+  module_common_tags = merge(var.common_tags, { TerraformModuleName = "container/eks/addon/cert-manager" })
 }
+
