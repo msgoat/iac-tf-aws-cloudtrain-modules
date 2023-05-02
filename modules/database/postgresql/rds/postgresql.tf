@@ -2,7 +2,7 @@ locals {
   # make sure that random user name does not start with a digit
   db_master_user_name = length(regexall("^[[:digit:]]", random_string.db_user.result)) > 0 ? "pg${random_string.db_user.result}" : random_string.db_user.result
   db_instance_name = "postgres-${var.region_name}-${var.solution_fqn}-${var.db_instance_name}"
-  final_db_snapshot_name = var.final_db_snapshot_enabled ? "snap-${local.db_instance_name}" : null
+  final_db_snapshot_name = var.final_db_snapshot_enabled ? "snap-${local.db_instance_name}-${random_id.snapshot_suffix.hex}" : null
 }
 
 resource aws_db_instance postgresql {
@@ -34,4 +34,8 @@ resource aws_db_instance postgresql {
   tags = merge({
     Name = local.db_instance_name
   }, local.module_common_tags)
+}
+
+resource random_id snapshot_suffix {
+  byte_length = 8
 }
