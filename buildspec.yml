@@ -35,7 +35,7 @@ phases:
       - export VERSION_SHA1=${CODEBUILD_RESOLVED_SOURCE_VERSION:0:8}
       - export PROJECT_VERSION=$VERSION_REVISION.$VERSION_CHANGELIST.$VERSION_SHA1
       - echo "Checking Terraform code quality of version [$PROJECT_VERSION]"
-      - /usr/bin/sonar-scanner/bin/sonar-scanner -Dsonar.projectVersion=$PROJECT_VERSION -Dsonar.token=$SONARQUBE_TOKEN
+      - /usr/bin/sonar-scanner/bin/sonar-scanner -Dsonar.projectVersion=$PROJECT_VERSION -Dsonar.login=$SONARQUBE_TOKEN
   post_build:
     commands:
       - echo "Running phase post_build"
