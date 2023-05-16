@@ -625,8 +625,8 @@ resource "helm_release" "cert_manager" {
   dependency_update = true
   atomic            = true
   cleanup_on_fail   = true
-  namespace         = var.kubernetes_namespace_name
-  create_namespace  = true
+  namespace         = var.kubernetes_namespace_owned ? kubernetes_namespace_v1.cert_manager[0].metadata[0].name : var.kubernetes_namespace_name
+  create_namespace  = false
   values            = [ local.cert_manager_values ]
   depends_on        = [ aws_iam_role_policy.cert_manager ]
 }

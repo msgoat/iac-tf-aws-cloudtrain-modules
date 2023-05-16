@@ -39,6 +39,12 @@ variable "kubernetes_namespace_name" {
   default = "cert-manager"
 }
 
+variable "kubernetes_namespace_owned" {
+  description = "Controls if the given Kubernetes namespace will be created and destroyed by this module; default: true"
+  type = bool
+  default = true
+}
+
 variable "helm_release_name" {
   description = "Name of the Helm release"
   type = string
