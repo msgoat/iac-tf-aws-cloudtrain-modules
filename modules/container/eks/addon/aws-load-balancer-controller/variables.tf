@@ -48,7 +48,7 @@ variable "helm_release_name" {
 variable "helm_chart_version" {
   description = "Version of the Helm chart"
   type = string
-  default = "1.4.7"
+  default = "1.5.2"
 }
 
 variable "replica_count" {

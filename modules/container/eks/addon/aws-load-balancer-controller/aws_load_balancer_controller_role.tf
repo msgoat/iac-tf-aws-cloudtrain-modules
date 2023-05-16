@@ -31,9 +31,13 @@ POLICY
   }, local.module_common_tags)
 }
 
-resource aws_iam_role_policy controller {
-  name = local.controller_policy_name
+resource aws_iam_role_policy_attachment controller {
   role = aws_iam_role.controller.name
+  policy_arn = aws_iam_policy.controller.arn
+}
+
+resource aws_iam_policy controller {
+  name = local.controller_policy_name
   policy = <<POLICY
 {
     "Version": "2012-10-17",
@@ -66,17 +70,16 @@ resource aws_iam_role_policy controller {
                 "ec2:DescribeTags",
                 "ec2:GetCoipPoolUsage",
                 "ec2:DescribeCoipPools",
-                "elasticloadbalancing:DescribeLoadBalancerAttributes",
-                "elasticloadbalancing:DescribeSSLPolicies",
                 "elasticloadbalancing:DescribeLoadBalancers",
-                "elasticloadbalancing:DescribeTargetGroupAttributes",
+                "elasticloadbalancing:DescribeLoadBalancerAttributes",
                 "elasticloadbalancing:DescribeListeners",
-                "elasticloadbalancing:DescribeTags",
-                "elasticloadbalancing:DescribeAccountLimits",
-                "elasticloadbalancing:DescribeTargetHealth",
-                "elasticloadbalancing:DescribeTargetGroups",
                 "elasticloadbalancing:DescribeListenerCertificates",
-                "elasticloadbalancing:DescribeRules"
+                "elasticloadbalancing:DescribeSSLPolicies",
+                "elasticloadbalancing:DescribeRules",
+                "elasticloadbalancing:DescribeTargetGroups",
+                "elasticloadbalancing:DescribeTargetGroupAttributes",
+                "elasticloadbalancing:DescribeTargetHealth",
+                "elasticloadbalancing:DescribeTags"
             ],
             "Resource": "*"
         },
@@ -218,6 +221,25 @@ resource aws_iam_role_policy controller {
         {
             "Effect": "Allow",
             "Action": [
+                "elasticloadbalancing:ModifyLoadBalancerAttributes",
+                "elasticloadbalancing:SetIpAddressType",
+                "elasticloadbalancing:SetSecurityGroups",
+                "elasticloadbalancing:SetSubnets",
+                "elasticloadbalancing:DeleteLoadBalancer",
+                "elasticloadbalancing:ModifyTargetGroup",
+                "elasticloadbalancing:ModifyTargetGroupAttributes",
+                "elasticloadbalancing:DeleteTargetGroup"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "Null": {
+                    "aws:ResourceTag/elbv2.k8s.aws/cluster": "false"
+                }
+            }
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
                 "elasticloadbalancing:AddTags"
             ],
             "Resource": [
@@ -234,25 +256,6 @@ resource aws_iam_role_policy controller {
                 },
                 "Null": {
                     "aws:RequestTag/elbv2.k8s.aws/cluster": "false"
-                }
-            }
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "elasticloadbalancing:ModifyLoadBalancerAttributes",
-                "elasticloadbalancing:SetIpAddressType",
-                "elasticloadbalancing:SetSecurityGroups",
-                "elasticloadbalancing:SetSubnets",
-                "elasticloadbalancing:DeleteLoadBalancer",
-                "elasticloadbalancing:ModifyTargetGroup",
-                "elasticloadbalancing:ModifyTargetGroupAttributes",
-                "elasticloadbalancing:DeleteTargetGroup"
-            ],
-            "Resource": "*",
-            "Condition": {
-                "Null": {
-                    "aws:ResourceTag/elbv2.k8s.aws/cluster": "false"
                 }
             }
         },
@@ -278,4 +281,5 @@ resource aws_iam_role_policy controller {
     ]
 }
 POLICY
+  tags = merge({ Name = local.controller_policy_name }, local.module_common_tags)
 }
