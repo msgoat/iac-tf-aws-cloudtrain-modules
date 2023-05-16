@@ -60,3 +60,7 @@ examples/**/.terraform.*
 # keep kubeconf files out of GIT
 **/output
 **/target
+
+# helm stuff
+**/values-local.yaml
+**/*.tgz
