@@ -71,14 +71,21 @@ variable loadbalancer_security_group_ids {
   default = []
 }
 
-variable ingress_controller_type {
-  description = "Specifies the type of ingress controller to expose via this loadbalancer, possible values are: `NGINX` or `TRAEFIK`"
+variable eks_cluster_name {
+  description = "Fully qualified name of the AWS EKS cluster this loadbalancer should forward to"
   type = string
-  default = "NGINX"
 }
 
-variable ingress_controller_secure {
-  description = "Controls if the loadbalancer should forward traffic to the ingress controller using HTTPS connections"
-  type = bool
-  default = false
+variable ingress_controller {
+  description = "Metadata defining the endpoints of an ingress controller in an EKS cluster"
+  type = object({
+    name = string
+    type = string
+    protocol = string
+    port = number
+    health_probe_path = string
+    health_probe_protocol = string
+    health_probe_port = number
+    health_probe_success_codes = list(string)
+  })
 }

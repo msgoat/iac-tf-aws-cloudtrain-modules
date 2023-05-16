@@ -6,19 +6,19 @@ locals {
 
 resource aws_lb_target_group ingress_controller {
   name = local.target_group_name
-  port = local.given_ingress_controller_config["traffic_port"]
-  protocol = upper(local.given_ingress_controller_config["traffic_protocol"])
+  port = var.ingress_controller.port
+  protocol = upper(var.ingress_controller.protocol)
   vpc_id = data.aws_vpc.vpc.id
-  target_type = "ip"
+  target_type = "instance"
 
   health_check {
-    path = local.given_ingress_controller_config["health_probe_path"]
-    port = local.given_ingress_controller_config["health_probe_port"]
-    protocol = upper(local.given_ingress_controller_config["health_probe_protocol"])
+    path = var.ingress_controller.health_probe_path
+    port = var.ingress_controller.health_probe_port
+    protocol = upper(var.ingress_controller.health_probe_protocol)
     healthy_threshold = 3
     unhealthy_threshold = 5
     timeout = 3
-    matcher = local.given_ingress_controller_config["health_probe_matcher"]
+    matcher = join(",", var.ingress_controller.health_probe_success_codes)
   }
 
   tags = merge({ Name = local.target_group_name }, local.module_common_tags)
