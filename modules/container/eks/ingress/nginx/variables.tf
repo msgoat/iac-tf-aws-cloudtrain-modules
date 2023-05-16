@@ -75,6 +75,18 @@ variable tls_certificate_arn {
   default = ""
 }
 
+variable loadbalancer_subnet_ids {
+  description = "Unique identifiers of all subnets inside the VPC supposed to host the Application Load Balancer"
+  type = list(string)
+  default = []
+}
+
+variable target_group_subnet_ids {
+  description = "Unique identifiers of all subnets inside the VPC supposed to host target groups"
+  type = list(string)
+  default = []
+}
+
 variable target_group_arn {
   description = "ARN of an existing target group attached to a previously created AWS load balancer; required if `load_balancer_strategy` is `SERVICE_VIA_TARGET_GROUP_BINDING`"
   type = string

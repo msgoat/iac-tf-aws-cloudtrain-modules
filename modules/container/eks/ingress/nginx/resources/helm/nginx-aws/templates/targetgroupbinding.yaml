@@ -11,4 +11,5 @@ spec:
     name: {{ .Values.targetGroupBinding.service.name }}
     port: {{ .Values.targetGroupBinding.service.port }}
   targetGroupARN: {{ .Values.targetGroupBinding.targetGroupArn }}
+  targetType: {{ .Values.targetGroupBinding.targetType }}
 {{- end }}

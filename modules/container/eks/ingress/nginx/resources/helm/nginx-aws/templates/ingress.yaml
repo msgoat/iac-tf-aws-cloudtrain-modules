@@ -10,6 +10,7 @@ metadata:
     alb.ingress.kubernetes.io/scheme: {{ .Values.loadbalancer.scheme }}
     alb.ingress.kubernetes.io/load-balancer-name: {{ .Values.loadbalancer.name }}
     alb.ingress.kubernetes.io/target-type: {{ .Values.loadbalancer.targetType }}
+    alb.ingress.kubernetes.io/subnets: {{ .Values.loadbalancer.targetGroupSubnets | quote }}
     alb.ingress.kubernetes.io/backend-protocol: {{ .Values.loadbalancer.backend.protocol }}
     alb.ingress.kubernetes.io/healthcheck-protocol: {{ .Values.loadbalancer.healthcheck.protocol }}
     alb.ingress.kubernetes.io/healthcheck-port: {{ .Values.loadbalancer.healthcheck.port | quote }}

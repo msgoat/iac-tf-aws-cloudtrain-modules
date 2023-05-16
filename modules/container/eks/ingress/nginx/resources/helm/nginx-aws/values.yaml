@@ -17,6 +17,8 @@ targetGroupBinding:
   # Control if NGINX should be exposed using a TargetGroupBinding
   enabled: false
   targetGroupArn: replace_me
+  # Default target type is always ip to optimize routing between ALB and ingress controller pods
+  targetType: ip
   service:
     name: ingress-nginx-controller
     port: 80
@@ -36,11 +38,11 @@ loadbalancer:
     path: "/healthz"
     intervalSeconds: "10"
     timeoutSeconds: "5"
-    successCodes: "200"
+    successCodes: "200,404"
   tls:
     certificateArn: replace_me
     sslPolicy: "ELBSecurityPolicy-TLS13-1-2-2021-06"
-
+  targetGroupSubnets: replace_me
 # upstream chart configuration
 ingress-nginx:
   ## nginx configuration
