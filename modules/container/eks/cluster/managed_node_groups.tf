@@ -24,7 +24,7 @@ locals {
     disk_size                = pair[0].disk_size
     capacity_type            = pair[0].capacity_type
     instance_types           = pair[0].instance_types
-    subnet_ids               = [var.node_group_subnet_ids[i]]
+    subnet_ids               = [var.node_group_subnet_ids[i % length(local.zone_names)]]
     labels                   = pair[0].labels
     taints                   = pair[0].taints
   }]
