@@ -54,3 +54,22 @@ variable jaeger_path {
   description = "Path used to route traffic to the Jaeger UI"
   type = string
 }
+
+variable node_group_workload_class {
+  description = "Class of the AKS node group this tool stack should be hosted on"
+  type = string
+  default = ""
+}
+
+variable ingress_class_name {
+  description = "Ingress class name"
+  type = string
+  default = "nginx"
+}
+
+variable ingress_controller_type {
+  description = "Ingress controller type; possible values are `NGINX` or `TRAEFIK`"
+  type = string
+  default = "NGINX"
+}
+
