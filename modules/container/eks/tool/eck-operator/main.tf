@@ -1,17 +1,23 @@
+# ----------------------------------------------------------------------------
+# main.tf
+# ----------------------------------------------------------------------------
+
 terraform {
   required_providers {
     aws = {
-      version = "~> 4.56"
+      source  = "hashicorp/aws"
+      version = "~> 4.0"
     }
     helm = {
       version = "~> 2.0"
     }
-    kubernetes = {
-      version = "~> 2.0"
+    random = {
+      version = "~> 3.0"
     }
   }
 }
 
 locals {
-  module_common_tags = var.common_tags
+  module_common_tags = merge(var.common_tags, { TerraformModuleName = "container/eks/tool/eck-operator" })
 }
+
