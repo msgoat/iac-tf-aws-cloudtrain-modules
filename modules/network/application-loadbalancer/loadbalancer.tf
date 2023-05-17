@@ -42,7 +42,7 @@ resource aws_lb_listener https {
   port = "443"
   protocol = "HTTPS"
   ssl_policy = var.ssl_security_policy
-  certificate_arn = var.tls_certificate_name == "" ? aws_acm_certificate.cert[0].arn : data.aws_acm_certificate.given[0].arn
+  certificate_arn = var.cm_certificate_arn
 
   default_action {
     type = "forward"

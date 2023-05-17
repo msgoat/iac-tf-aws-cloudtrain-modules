@@ -43,9 +43,9 @@ variable target_group_subnet_ids {
   type = list(string)
 }
 
-variable host_names {
+variable domain_name {
   description = "DNS domain names of hosts whose traffic should be routed through the Application Load Balancer"
-  type = list(string)
+  type = string
 }
 
 variable target_group {
@@ -94,16 +94,9 @@ variable ssl_security_policy {
   default = "ELBSecurityPolicy-TLS-1-2-Ext-2018-06"
 }
 
-variable tls_certificate_name {
-  description = "(Domain) name of an existing ACM TLS certificate to use instead of creating a new one; the TLS certificate is expected to be ISSUED"
+variable cm_certificate_arn {
+  description = "ARN of an existing Azure Certificate Manager TLS certificate to use for https"
   type = string
-  default = ""
-}
-
-variable eks_cluster_name {
-  description = "Name of an AWS EKS cluster whose managed node groups should be attached to the target groups"
-  type = string
-  default = ""
 }
 
 variable loadbalancer_security_group_ids {
