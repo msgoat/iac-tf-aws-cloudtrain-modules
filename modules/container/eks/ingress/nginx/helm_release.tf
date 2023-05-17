@@ -42,7 +42,14 @@ ingress-nginx:
     containerPort:
       http: 80
       https: 443
+%{ if var.jaeger_enabled ~}
+    config:
+      enabled-opentracing: true
+      jaeger-collector-host: ${var.jaeger_agent_host}
+      jaeger-collector-port: ${var.jaeger_agent_port}
+%{ else  ~}
     config: {}
+%{ endif ~}
     configAnnotations: {}
     proxySetHeaders: {}
     addHeaders: {}
@@ -251,7 +258,7 @@ ingress-nginx:
     metrics:
       port: 10254
       portName: metrics
-      enabled: false
+      enabled: ${var.prometheus_operator_enabled}
       service:
         annotations: {}
         labels: {}
@@ -260,7 +267,7 @@ ingress-nginx:
         servicePort: 10254
         type: ClusterIP
       serviceMonitor:
-        enabled: false
+        enabled: ${var.prometheus_operator_enabled}
       prometheusRule:
         enabled: false
     lifecycle:
