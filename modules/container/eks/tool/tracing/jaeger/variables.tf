@@ -73,3 +73,8 @@ variable ingress_controller_type {
   default = "NGINX"
 }
 
+variable elasticsearch_strategy {
+  description = "Controls which type of Elasticsearch backend will be used as a datastore; possible values are: `ES_INTERNAL`, `ES_OPENSEARCH`, `ES_ECK_OPERATOR`, default: `ES_INTERNAL`"
+  type = string
+  default = "ES_INTERNAL"
+}

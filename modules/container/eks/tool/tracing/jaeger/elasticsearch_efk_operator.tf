@@ -133,6 +133,7 @@ EOT
 }
 
 resource helm_release elasticsearch {
+  count = var.elasticsearch_strategy == "ES_ECK_OPERATOR" ? 1 : 0
   chart = "${path.module}/resources/helm/eck-elasticsearch"
   name = local.elasticsearch_release_name
   dependency_update = true

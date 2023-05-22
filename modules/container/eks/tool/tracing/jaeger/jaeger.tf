@@ -5,13 +5,10 @@ locals {
   jaeger_agent_memory_limit = "256Mi"
   helm_values = <<EOT
 # Default values for jaeger.
-# This is a YAML-formatted file.
-# Jaeger values are grouped by component. Cassandra values override subchart values
 
-# we are using an existing data store
 provisionDataStore:
   cassandra: false
-  elasticsearch: false
+  elasticsearch: ${var.elasticsearch_strategy == "ES_INTERNAL" ? true : false}
   kafka: false
 
 nameOverride: ""
@@ -21,37 +18,33 @@ storage:
   # allowed values (cassandra, elasticsearch)
   type: elasticsearch
   elasticsearch:
+%{ if var.elasticsearch_strategy == "ES_ECK_OPERATOR" ~}
     scheme: https
     host: ${local.elasticsearch_service_name}
     port: ${local.elasticsearch_service_port}
     user: elastic
     usePassword: true
     password: changeme
-    # indexPrefix: test
-    ## Use existing secret (ignores previous password)
     existingSecret: ${local.elasticsearch_credentials_k8s_secret_name}
     existingSecretKey: elastic
     nodesWanOnly: false
     extraEnv: []
-    ## ES related env vars to be configured on the concerned components
-      # - name: ES_SERVER_URLS
-      #   value: http://elasticsearch-master:9200
-      # - name: ES_USERNAME
-      #   value: elastic
-      # - name: ES_INDEX_PREFIX
-      #   value: test
-    ## ES related cmd line opts to be configured on the concerned components
     cmdlineParams: {}
-      # es.server-urls: http://elasticsearch-master:9200
-      # es.username: elastic
-      # es.index-prefix: test
+%{ endif ~}
+%{ if var.elasticsearch_strategy == "ES_INTERNAL" ~}
+    scheme: http
+    host: elasticsearch-master.${var.kubernetes_namespace_name}
+    port: 9200
+    user: elastic
+    usePassword: false
+    password: changeme
+    nodesWanOnly: false
+    extraEnv: []
+    cmdlineParams: {}
+%{ endif ~}
   grpcPlugin:
     extraEnv: []
 
-# Begin: Default values for the various components of Jaeger
-# This chart has been based on the Kubernetes integration found in the following repo:
-# https://github.com/jaegertracing/jaeger-kubernetes/blob/main/production/jaeger-production-template.yml
-#
 agent:
   podSecurityContext: {}
   securityContext: {}
@@ -64,18 +57,11 @@ agent:
   daemonset:
     useHostPort: false
     updateStrategy: {}
-      # type: RollingUpdate
-      # rollingUpdate:
-      #   maxUnavailable: 1
   service:
     type: ClusterIP
-    # zipkinThriftPort :accept zipkin.thrift over compact thrift protocol
     zipkinThriftPort: 5775
-    # compactPort: accept jaeger.thrift over compact thrift protocol
     compactPort: 6831
-    # binaryPort: accept jaeger.thrift over binary thrift protocol
     binaryPort: 6832
-    # samplingPort: (HTTP) serve configs, sampling strategies
     samplingPort: 5778
   resources:
     limits:
@@ -86,7 +72,6 @@ agent:
       memory: ${local.jaeger_agent_memory_request}
   serviceAccount:
     create: true
-    # Explicitly mounts the API credentials for the Service Account
     automountServiceAccountToken: false
     name:
     annotations: {}
@@ -100,21 +85,9 @@ agent:
       effect: "NoSchedule"
 %{ endif ~}
   podAnnotations: {}
-  ## Additional pod labels
-  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
   extraSecretMounts: []
-  # - name: jaeger-tls
-  #   mountPath: /tls
-  #   subPath: ""
-  #   secretName: jaeger-tls
-  #   readOnly: true
   extraConfigmapMounts: []
-  # - name: jaeger-config
-  #   mountPath: /config
-  #   subPath: ""
-  #   configMap: jaeger-config
-  #   readOnly: true
   useHostNetwork: false
   dnsPolicy: ClusterFirst
   priorityClassName: ""
@@ -131,12 +104,16 @@ collector:
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
   extraEnv: []
+%{ if var.elasticsearch_strategy == "ES_ECK_OPERATOR" ~}
   cmdlineParams:
     es.tls.enabled: "true"
     es.tls.ca: "/tls/ca.crt"
     # need to fallback ES client to ES 7 level since Jaeger cannot work with ES 8 out of the box
     es.version: 7
     es.create-index-templates: "false"
+%{ else ~}
+  cmdlineParams: {}
+%{ endif ~}
   basePath: /
   replicaCount: 1
   autoscaling:
@@ -174,29 +151,6 @@ collector:
         # nodePort:
   ingress:
     enabled: false
-    # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
-    # See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
-    # ingressClassName: nginx
-    annotations: {}
-    labels: {}
-    # Used to create an Ingress record.
-    # The 'hosts' variable accepts two formats:
-    # hosts:
-    #   - chart-example.local
-    # or:
-    # hosts:
-    #   - host: chart-example.local
-    #     servicePort: grpc
-    # annotations:
-      # kubernetes.io/ingress.class: nginx
-      # kubernetes.io/tls-acme: "true"
-    # labels:
-      # app: jaeger-collector
-    # tls:
-      # Secrets must be manually created in the namespace.
-      # - secretName: chart-example-tls
-      #   hosts:
-      #     - chart-example.local
   resources:
     limits:
       cpu: 1
@@ -206,7 +160,6 @@ collector:
       memory: 512Mi
   serviceAccount:
     create: true
-    # Explicitly mounts the API credentials for the Service Account
     automountServiceAccountToken: false
     name:
     annotations: {}
@@ -232,59 +185,22 @@ collector:
                   - ${var.node_group_workload_class}
 %{ endif ~}
   podAnnotations: {}
-  ## Additional pod labels
-  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
+%{ if var.elasticsearch_strategy == "ES_ECK_OPERATOR" ~}
   extraSecretMounts:
   - name: jaeger-tls
     mountPath: /tls
     secretName: ${local.elasticsearch_certificates_k8s_secret_name}
     readOnly: true
+%{ else ~}
+  extraSecretMounts: {}
+%{ endif ~}
   extraConfigmapMounts: []
-  # - name: jaeger-config
-  #   mountPath: /config
-  #   subPath: ""
-  #   configMap: jaeger-config
-  #   readOnly: true
-  # samplingConfig: |-
-  #   {
-  #     "service_strategies": [
-  #       {
-  #         "service": "foo",
-  #         "type": "probabilistic",
-  #         "param": 0.8,
-  #         "operation_strategies": [
-  #           {
-  #             "operation": "op1",
-  #             "type": "probabilistic",
-  #             "param": 0.2
-  #           },
-  #           {
-  #             "operation": "op2",
-  #             "type": "probabilistic",
-  #             "param": 0.4
-  #           }
-  #         ]
-  #       },
-  #       {
-  #         "service": "bar",
-  #         "type": "ratelimiting",
-  #         "param": 5
-  #       }
-  #     ],
-  #     "default_strategy": {
-  #       "type": "probabilistic",
-  #       "param": 1
-  #     }
-  #   }
   priorityClassName: ""
   serviceMonitor:
     enabled: true
     additionalLabels: {}
-    # https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/api.md#relabelconfig
     relabelings: []
-    # -- ServiceMonitor metric relabel configs to apply to samples before ingestion
-    # https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#endpoint
     metricRelabelings: []
 
 query:
@@ -322,12 +238,16 @@ query:
 #        memory: 128Mi
   annotations: {}
   dnsPolicy: ClusterFirst
+%{ if var.elasticsearch_strategy == "ES_ECK_OPERATOR" ~}
   cmdlineParams:
     es.tls.enabled: "true"
     es.tls.ca: "/tls/ca.crt"
     # need to fallback ES client to ES 7 level since Jaeger cannot work with ES 8 out of the box
     es.version: 7
     es.create-index-templates: "false"
+%{ else ~}
+  cmdlineParams: {}
+%{ endif ~}
   extraEnv: []
   replicaCount: 1
   service:
@@ -385,20 +305,17 @@ query:
                   - ${var.node_group_workload_class}
 %{ endif ~}
   podAnnotations: {}
-  ## Additional pod labels
-  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
   extraConfigmapMounts: []
-  # - name: jaeger-config
-  #   mountPath: /config
-  #   subPath: ""
-  #   configMap: jaeger-config
-  #   readOnly: true
+%{ if var.elasticsearch_strategy == "ES_ECK_OPERATOR" ~}
   extraSecretMounts:
   - name: jaeger-tls
     mountPath: /tls
     secretName: ${local.elasticsearch_certificates_k8s_secret_name}
     readOnly: true
+%{ else ~}
+  extraSecretMounts: []
+%{ endif ~}
   extraVolumes: []
   sidecars: []
   priorityClassName: ""
@@ -455,8 +372,6 @@ esIndexCleaner:
   extraSecretMounts: []
   extraConfigmapMounts: []
   podAnnotations: {}
-  ## Additional pod labels
-  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
   # ttlSecondsAfterFinished: 120
 
@@ -487,7 +402,6 @@ esRollover:
     #   memory: 128Mi
   serviceAccount:
     create: true
-    # Explicitly mounts the API credentials for the Service Account
     automountServiceAccountToken: false
     name:
   nodeSelector: {}
@@ -496,8 +410,6 @@ esRollover:
   extraSecretMounts: []
   extraConfigmapMounts: []
   podAnnotations: {}
-  ## Additional pod labels
-  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
   # ttlSecondsAfterFinished: 120
   initHook:
