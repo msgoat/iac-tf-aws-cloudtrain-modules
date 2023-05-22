@@ -36,7 +36,6 @@ module logging {
   depends_on = [ module.eck_operator ]
 }
 
-/*
 module tracing {
   source = "../tool/tracing/jaeger"
   region_name = var.region_name
@@ -47,6 +46,5 @@ module tracing {
   eks_cluster_name = var.eks_cluster_name
   jaeger_host_name = var.domain_name
   jaeger_path = "/jaeger"
-  depends_on = [ module.eck_operator ]
+  # depends_on = [ module.eck_operator ]
 }
-*/
