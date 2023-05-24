@@ -34,6 +34,8 @@ module logging {
   kibana_host_name = var.domain_name
   kibana_path = "/kibana"
   depends_on = [ module.eck_operator ]
+  cert_manager_enabled = var.cert_manager_enabled
+  prometheus_operator_enabled = var.prometheus_operator_enabled
 }
 
 module tracing {
@@ -47,4 +49,6 @@ module tracing {
   jaeger_host_name = var.domain_name
   jaeger_path = "/jaeger"
   # depends_on = [ module.eck_operator ]
+  cert_manager_enabled = var.cert_manager_enabled
+  prometheus_operator_enabled = var.prometheus_operator_enabled
 }
