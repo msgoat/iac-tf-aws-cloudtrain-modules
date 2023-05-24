@@ -73,3 +73,33 @@ variable ingress_controller_type {
   type = string
   default = "NGINX"
 }
+
+variable "cert_manager_enabled" {
+  description = "Controls if cert-manager is installed and should be used for certificate management"
+  type = bool
+  default = false
+}
+
+variable "prometheus_operator_enabled" {
+  description = "Controls if prometheus operator is installed and pod/service monitors should be enabled"
+  type = bool
+  default = false
+}
+
+variable "jaeger_enabled" {
+  description = "Controls if jaeger is installed and support should be enabled"
+  type = bool
+  default = false
+}
+
+variable "jaeger_agent_host" {
+  description = "Host name of the jaeger agent endpoint; required if `jaeger_enabled` is true"
+  type = string
+  default = ""
+}
+
+variable "jaeger_agent_port" {
+  description = "Port number of the jaeger agent endpoint; required if `jaeger_enabled` is true"
+  type = number
+  default = 0
+}

@@ -93,7 +93,7 @@ agent:
   priorityClassName: ""
   initContainers: []
   serviceMonitor:
-    enabled: true
+    enabled: ${var.prometheus_operator_enabled}
 
 collector:
   podSecurityContext: {}
@@ -198,7 +198,7 @@ collector:
   extraConfigmapMounts: []
   priorityClassName: ""
   serviceMonitor:
-    enabled: true
+    enabled: ${var.prometheus_operator_enabled}
     additionalLabels: {}
     relabelings: []
     metricRelabelings: []
@@ -320,7 +320,7 @@ query:
   sidecars: []
   priorityClassName: ""
   serviceMonitor:
-    enabled: true
+    enabled: ${var.prometheus_operator_enabled}
 
 esIndexCleaner:
   enabled: false

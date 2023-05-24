@@ -78,3 +78,15 @@ variable elasticsearch_strategy {
   type = string
   default = "ES_INTERNAL"
 }
+
+variable "cert_manager_enabled" {
+  description = "Controls if cert-manager is installed and should be used for certificate management"
+  type = bool
+  default = false
+}
+
+variable "prometheus_operator_enabled" {
+  description = "Controls if prometheus operator is installed and pod/service monitors should be enabled"
+  type = bool
+  default = false
+}

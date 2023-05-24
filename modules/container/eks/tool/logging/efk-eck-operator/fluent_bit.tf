@@ -48,7 +48,7 @@ service:
   port: 2020
 
 serviceMonitor:
-  enabled: false
+  enabled: ${var.prometheus_operator_enabled}
   # namespace: monitoring
   # interval: 10s
   # scrapeTimeout: 10s
