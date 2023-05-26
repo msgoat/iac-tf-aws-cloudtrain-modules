@@ -103,7 +103,8 @@ collector:
   imagePullSecrets: []
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
-  extraEnv: []
+  extraEnv:
+    COLLECTOR_OTLP_ENABLED: true
 %{ if var.elasticsearch_strategy == "ES_ECK_OPERATOR" ~}
   cmdlineParams:
     es.tls.enabled: "true"
@@ -115,7 +116,7 @@ collector:
   cmdlineParams: {}
 %{ endif ~}
   basePath: /
-  replicaCount: 1
+  replicaCount: ${var.replica_count}
   autoscaling:
     enabled: false
     minReplicas: 2
@@ -124,31 +125,19 @@ collector:
     # targetMemoryUtilizationPercentage: 80
   service:
     annotations: {}
-    # The IP to be used by the load balancer (if supported)
-    loadBalancerIP: ''
-    # List of IP ranges that are allowed to access the load balancer (if supported)
-    loadBalancerSourceRanges: []
     type: ClusterIP
-    # Cluster IP address to assign to service. Set to None to make service headless
-    clusterIP: ""
     grpc:
       port: 14250
-      # nodePort:
-    # httpPort: can accept spans directly from clients in jaeger.thrift format
     http:
       port: 14268
-      # nodePort:
-    # can accept Zipkin spans in JSON or Thrift
     zipkin: {}
       # port: 9411
       # nodePort:
     otlp:
-      grpc: {}
-        # port: 4317
-        # nodePort:
-      http: {}
-        # port: 4318
-        # nodePort:
+      grpc:
+        port: 4317
+      http:
+        port: 4318
   ingress:
     enabled: false
   resources:
@@ -249,7 +238,7 @@ query:
   cmdlineParams: {}
 %{ endif ~}
   extraEnv: []
-  replicaCount: 1
+  replicaCount: ${var.replica_count}
   service:
     annotations: {}
     type: ClusterIP
@@ -474,8 +463,8 @@ EOT
 
 resource helm_release jaeger {
   chart = "jaeger"
-  version = "0.69.1"
-  name = "trace-jaeger"
+  version = var.helm_chart_version
+  name = var.helm_release_name
   dependency_update = true
   atomic = true
   cleanup_on_fail = true

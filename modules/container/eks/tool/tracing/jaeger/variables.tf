@@ -42,7 +42,19 @@ variable kubernetes_namespace_name {
 variable helm_release_name {
   description = "Name of the Helm release which represents a deployment of this stack"
   type = string
-  default = "jaeger"
+  default = "trace-jaeger"
+}
+
+variable helm_chart_version {
+  description = "Version of the Helm chart which deploys Jaeger"
+  type = string
+  default = "0.69.1"
+}
+
+variable replica_count {
+  description = "Number of replicas running Jaeger components"
+  type = number
+  default = 2
 }
 
 variable jaeger_host_name {
