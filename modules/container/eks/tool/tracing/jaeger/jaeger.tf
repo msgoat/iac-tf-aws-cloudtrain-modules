@@ -103,8 +103,6 @@ collector:
   imagePullSecrets: []
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
-  extraEnv:
-    COLLECTOR_OTLP_ENABLED: true
 %{ if var.elasticsearch_strategy == "ES_ECK_OPERATOR" ~}
   cmdlineParams:
     es.tls.enabled: "true"
