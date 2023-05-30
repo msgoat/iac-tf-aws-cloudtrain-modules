@@ -54,7 +54,7 @@ variable helm_release_name {
 variable helm_chart_version {
   description = "Version of the Helm chart which deploys Traefik"
   type = string
-  default = "traefik"
+  default = "23.0.1"
 }
 
 variable replica_count {
@@ -63,20 +63,44 @@ variable replica_count {
   default = 2
 }
 
-variable use_aws_load_balancer_controller {
-  description = "Controls if Traefik should use the AWS Load Balancer Controller to expose its endpoints"
-  type = bool
-  default = false
-}
-
-variable aws_load_balancer_strategy {
-  description = "Strategy to use when exposing Traefik's endpoints; possible values are `SERVICE_VIA_NLB` or `INGRESS_VIA_ALB`"
+variable load_balancer_strategy {
+  description = "Strategy to use when exposing NGINX's endpoints; possible values are `SERVICE_VIA_NODE_PORT`, `SERVICE_VIA_NLB`, `SERVICE_VIA_TARGET_GROUP_BINDING` or `INGRESS_VIA_ALB`"
   type = string
-  default = "INGRESS_VIA_ALB"
+  default = "SERVICE_VIA_NODE_PORT"
 }
 
 variable tls_certificate_arn {
   description = "ARN of a TLS certificate managed by AWS Certificate Manager; required if `use_aws_load_balancer_controller` is true"
   type = string
   default = ""
+}
+
+variable "cert_manager_enabled" {
+  description = "Controls if cert-manager is installed and should be used for certificate management"
+  type = bool
+  default = false
+}
+
+variable "prometheus_operator_enabled" {
+  description = "Controls if prometheus operator is installed and pod/service monitors should be enabled"
+  type = bool
+  default = false
+}
+
+variable "jaeger_enabled" {
+  description = "Controls if jaeger is installed and support should be enabled"
+  type = bool
+  default = false
+}
+
+variable "jaeger_agent_host" {
+  description = "Host name of the jaeger agent endpoint; required if `jaeger_enabled` is true"
+  type = string
+  default = ""
+}
+
+variable "jaeger_agent_port" {
+  description = "Port number of the jaeger agent endpoint; required if `jaeger_enabled` is true"
+  type = number
+  default = 0
 }
