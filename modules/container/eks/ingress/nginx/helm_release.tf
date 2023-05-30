@@ -44,9 +44,20 @@ ingress-nginx:
       https: 443
 %{ if var.jaeger_enabled ~}
     config:
-      enabled-opentracing: true
-      jaeger-collector-host: ${var.jaeger_agent_host}
-      jaeger-collector-port: ${var.jaeger_agent_port}
+      enable-opentracing: false
+      enable-opentelemetry: true
+      opentelemetry-config: "/etc/nginx/opentelemetry.toml"
+      opentelemetry-operation-name: "HTTP $request_method $service_name $uri"
+      opentelemetry-trust-incoming-span: "true"
+      otlp-collector-host: ${var.jaeger_agent_host}
+      otlp-collector-port: "4317"
+      otel-max-queuesize: "2048"
+      otel-schedule-delay-millis: "5000"
+      otel-max-export-batch-size: "512"
+      otel-service-name: "nginx-ingress" # Opentelemetry resource name
+      otel-sampler: "AlwaysOn" # Also: AlwaysOff, TraceIdRatioBased
+      otel-sampler-ratio: "1.0"
+      otel-sampler-parent-based: "false"
 %{ else  ~}
     config: {}
 %{ endif ~}
@@ -198,7 +209,7 @@ ingress-nginx:
     #     allowPrivilegeEscalation: false
 
     opentelemetry:
-      enabled: false
+      enabled: ${var.jaeger_enabled}
 
     admissionWebhooks:
       annotations: {}
