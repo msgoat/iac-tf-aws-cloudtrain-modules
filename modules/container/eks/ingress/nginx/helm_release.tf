@@ -44,6 +44,7 @@ ingress-nginx:
       https: 443
     config:
       use-forwarded-headers: true # mandatory when behind a load balancer
+      proxy-add-original-uri-header: true # mandatory for URL rewrites
       enable-opentracing: false
       enable-opentelemetry: true
       opentelemetry-config: "/etc/nginx/opentelemetry.toml"
