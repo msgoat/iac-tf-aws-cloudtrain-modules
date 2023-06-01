@@ -42,7 +42,6 @@ ingress-nginx:
     containerPort:
       http: 80
       https: 443
-%{ if var.jaeger_enabled ~}
     config:
       enable-opentracing: false
       enable-opentelemetry: true
@@ -58,9 +57,6 @@ ingress-nginx:
       otel-sampler: "AlwaysOn" # Also: AlwaysOff, TraceIdRatioBased
       otel-sampler-ratio: "1.0"
       otel-sampler-parent-based: "false"
-%{ else  ~}
-    config: {}
-%{ endif ~}
     configAnnotations: {}
     proxySetHeaders: {}
     addHeaders: {}
@@ -209,7 +205,7 @@ ingress-nginx:
     #     allowPrivilegeEscalation: false
 
     opentelemetry:
-      enabled: ${var.jaeger_enabled}
+      enabled: true
 
     admissionWebhooks:
       annotations: {}
