@@ -43,6 +43,7 @@ ingress-nginx:
       http: 80
       https: 443
     config:
+      use-forwarded-headers: true # mandatory when behind a load balancer
       enable-opentracing: false
       enable-opentelemetry: true
       opentelemetry-config: "/etc/nginx/opentelemetry.toml"
