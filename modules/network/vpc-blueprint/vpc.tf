@@ -12,19 +12,22 @@ module "vpc" {
   zones_to_span         = var.zones_to_span
   subnet_templates = [
     {
-      subnet_name   = "web"
+      name          = "web"
+      role          = "InternetFacingContainer"
       accessibility = "public"
       newbits       = 8
       tags          = {}
     },
     {
-      subnet_name   = "app"
+      name          = "app"
+      role          = "ApplicationContainer"
       accessibility = "private"
       newbits       = 4
       tags          = {}
     },
     {
-      subnet_name   = "data"
+      name          = "data"
+      role          = "DatabaseContainer"
       accessibility = "private"
       newbits       = 4
       tags          = {}
