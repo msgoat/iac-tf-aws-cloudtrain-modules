@@ -36,6 +36,9 @@ phases:
       - export PROJECT_VERSION=$VERSION_REVISION.$VERSION_CHANGELIST.$VERSION_SHA1
       - echo "Checking Terraform code quality of version [$PROJECT_VERSION]"
       - /usr/bin/sonar-scanner/bin/sonar-scanner -Dsonar.projectVersion=$PROJECT_VERSION -Dsonar.login=$SONARQUBE_TOKEN
+      - echo "Tag branch [$VERSION_CHANGELIST] with git tag [$PROJECT_VERSION]"
+      - git tag -a $PROJECT_VERSION -m "$CODEBUILD_BUILD_ARN"
+      - git push
   post_build:
     commands:
       - echo "Running phase post_build"
