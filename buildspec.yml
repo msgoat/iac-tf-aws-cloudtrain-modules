@@ -41,7 +41,8 @@ phases:
       - git config user.email "michael.theis@msg.group"
       - git tag -a $PROJECT_VERSION -m "$CODEBUILD_BUILD_ARN"
       #- git tag $PROJECT_VERSION
-      - git push origin HEAD:$VERSION_CHANGELIST
+      - git remote -v
+      #- git push origin HEAD:$VERSION_CHANGELIST
   post_build:
     commands:
       - echo "Running phase post_build"
