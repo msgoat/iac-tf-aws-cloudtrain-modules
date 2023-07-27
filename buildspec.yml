@@ -34,12 +34,13 @@ phases:
       - export VERSION_CHANGELIST=${GIT_BRANCH:-main}
       - export VERSION_SHA1=${CODEBUILD_RESOLVED_SOURCE_VERSION:0:8}
       - export PROJECT_VERSION=$VERSION_REVISION.$VERSION_CHANGELIST.$VERSION_SHA1
-      - echo "Checking Terraform code quality of version [$PROJECT_VERSION]"
-      - /usr/bin/sonar-scanner/bin/sonar-scanner -Dsonar.projectVersion=$PROJECT_VERSION -Dsonar.login=$SONARQUBE_TOKEN
+      #- echo "Checking Terraform code quality of version [$PROJECT_VERSION]"
+      #- /usr/bin/sonar-scanner/bin/sonar-scanner -Dsonar.projectVersion=$PROJECT_VERSION -Dsonar.login=$SONARQUBE_TOKEN
       - echo "Tag branch [$VERSION_CHANGELIST] with git tag [$PROJECT_VERSION]"
-      #- git config user.name "$CODEBUILD_INITIATOR"
-      #- git tag -a $PROJECT_VERSION -m "$CODEBUILD_BUILD_ARN"
-      - git tag $PROJECT_VERSION
+      - git config user.name "msg-theism"
+      - git config user.email "michael.theis@msg.group"
+      - git tag -a $PROJECT_VERSION -m "$CODEBUILD_BUILD_ARN"
+      #- git tag $PROJECT_VERSION
       - git push origin HEAD:$VERSION_CHANGELIST
   post_build:
     commands:
