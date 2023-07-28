@@ -6,6 +6,31 @@ Originally developed for msg's `Cloud Training Program` and `Cloud Expert Progra
 
 > Still work in progress! Provided AS IS without any warranties!
 
+## Module Versioning
+
+This terraform multi-module is versioning via git tags. The main revision number according to semantic versioning 
+is stored in file [revision.txt](revision.txt). During the build further parts like branch name and short commit hash
+are added to the tag name as well.
+
+So if revision is `1.1.1` and the branch is `main` and the short commit hash is `12345678` the git tag name is `1.1.1.main.12345678`.
+
+Whenever you want to pin the module version used in your terraform live code to a specific version 
+like `1.1.1.main.12345678`, add the corresponding tag name to the modules `source` attribute:
+
+```text
+module "eks_cluster" {
+    source = "git::https://github.com/msgoat/iac-tf-aws-cloudtrain-modules.git//modules/container/eks/cluster?ref=1.1.1.main.12345678"
+}
+```
+
+## Release Information
+
+A changelog can be found in [changelog.md](changelog.md).
+
+## Status
+
+![Build status](https://codebuild.eu-west-1.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoiaVVHN0Z6b2srYkV5K3lOYVRYbDhDa1FXMlRYWGZ3NnBmYUI0UlczYzVDVXFzei9VTVA1dFI2YjZwbXZGcEtzNE9FMWthaGlpVmo3T3pCdXZJNmNZQnVjPSIsIml2UGFyYW1ldGVyU3BlYyI6IkhvSENJbGYrdHE0NlZRdnEiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=main)
+
 ## Provided Terraform modules
 
 Provides the following modules:
@@ -29,6 +54,3 @@ Provides the following modules:
 | [network/vpc-blueprint](modules/network/vpc-blueprint/README.md)                                                       | modules/network/vpc-blueprint                                  | Creates a reference VPC based on a VPC blueprint.                                                                                                                  | 
 | [security/certificate](modules/security/certificate/README.md)                                                         | modules/security/certificate                                   | Creates a TLS certificate managed by AWS Certificate Manager.                                                                                                      | 
 | [storage/blob](modules/storage/blob/README.md)                                                                         | modules/storage/blob                                           | Creates a S3 bucket supposed to be used for blob storage.                                                                                                          | 
-
-## TODOs
-
