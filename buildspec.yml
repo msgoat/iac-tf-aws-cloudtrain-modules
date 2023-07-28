@@ -38,8 +38,8 @@ phases:
       #- echo "Checking Terraform code quality of version [$PROJECT_VERSION]"
       #- /usr/bin/sonar-scanner/bin/sonar-scanner -Dsonar.projectVersion=$PROJECT_VERSION -Dsonar.login=$SONARQUBE_TOKEN
       - echo "Tag branch [$VERSION_CHANGELIST] with git tag [$PROJECT_VERSION] on behalf of CodeBuild initiator [$CODEBUILD_INITIATOR] and GitHub actor [$CODEBUILD_WEBHOOK_ACTOR_ACCOUNT_ID]"
-      - git config user.name "msg-theism"
-      - git config user.email "michael.theis@msg.group"
+      - git config user.name "$GITHUB_TOKEN"
+      - git config user.email "msgoat@msg.group"
       - git tag -a $PROJECT_VERSION -m "$CODEBUILD_BUILD_ARN"
       #- git tag $PROJECT_VERSION
       - git remote set-url origin "https://$GITHUB_TOKEN@github.com/msgoat/iac-tf-aws-cloudtrain-modules.git"
