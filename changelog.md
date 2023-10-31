@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 ### Fixed
 
+## [2.0.0] - 2023-10-31
+### Changed
+- upgraded to AWS provider 5.x
+
 ## [1.10.0] - 2023-07-31
 ### Added
 - sonarqube scanner now breaks builds after quality gate failure

@@ -51,7 +51,7 @@ resource "aws_nat_gateway" "nat" {
 # Create the calculated number of EIPs depending on the NAT strategy
 resource "aws_eip" "nat" {
   for_each = local.nat_gateway_templates_by_key
-  vpc      = true
+  domain = "vpc"
   tags = merge({
     Name = each.value.eip_name
   }, local.module_common_tags)
