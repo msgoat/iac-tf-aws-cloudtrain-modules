@@ -1,5 +1,5 @@
 module "nginx" {
-  source = "../nginx"
+  source = "../nginx2"
   region_name = var.region_name
   solution_name = var.solution_name
   solution_stage = var.solution_stage

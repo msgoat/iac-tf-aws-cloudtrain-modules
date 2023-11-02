@@ -1,10 +1,19 @@
-# container/eks/ingress/nginx 
+# container/eks/ingress/nginx2 
 
-> __Deprecated:__ Please use [container/eks/ingress/nginx2](../nginx2/README.md) instead!
+> __Note:__
+> Supersedes the former [container/eks/ingress/nginx](../nginx/README.md) module, which was hard to upgrade since it used a
+> custom Helm chart depending on the upstream ingress-nginx helm chart. 
+> This implementation works with two charts instead:
+> * The upstream ingress-nginx helm chart
+> * An internal custom helm chart named `nginx-aws-extensions` which add AWS-specific extensions missing in the upstream chart.
+>
+> Thus, upgrading the version of the upstream chart is fairly easy: just specify a newer version number via variable
+> `helm_chart_version`.
 
 Terraform module to install the [NGinX Ingress Controller](https://kubernetes.github.io/ingress-nginx/) on any given AWS EKS cluster.
 
-By default, the ingress controller is installed in namespace `ingress-nginx` running with `2` replicas.
+By default, the ingress controller is installed in namespace `ingress-nginx` running with `2` replicas 
+spread across availability zones and nodes.
 
 The following strategies are supported to expose the ingress controller outside the given EKS cluster:
 
