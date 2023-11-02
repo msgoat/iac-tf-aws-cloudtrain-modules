@@ -18,6 +18,6 @@ terraform {
 }
 
 locals {
-  module_common_tags = merge(var.common_tags, { TerraformModuleName = "container/eks/ingress/nginx" })
+  module_common_tags = merge(var.common_tags, { TerraformModuleName = "container/eks/ingress/nginx2" })
 }
 
