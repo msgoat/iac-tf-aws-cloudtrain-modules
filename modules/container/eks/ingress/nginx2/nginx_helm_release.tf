@@ -43,7 +43,26 @@ controller:
   ## extraArgs:
   ##   default-ssl-certificate: "<namespace>/<secret_name>"
   extraEnvs: []
-  affinity: {}
+%{ if var.node_group_workload_class != "" ~}
+  # It's OK to be deployed to the tools node group, too
+  tolerations:
+    - key: "group.msg.cloud.kubernetes/workload"
+      operator: "Equal"
+      value: ${var.node_group_workload_class}
+      effect: "NoSchedule"
+%{ endif ~}
+%{ if var.node_group_workload_class != "" ~}
+  affinity:
+    # Encourages deployment to the tools node group
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: "group.msg.cloud.kubernetes/workload"
+                operator: In
+                values:
+                  - ${var.node_group_workload_class}
+%{ endif ~}
 %{ if var.ensure_high_availability ~}
   topologySpreadConstraints:
     - labelSelector:
@@ -248,6 +267,26 @@ defaultBackend:
     requests:
       cpu: 10m
       memory: 20Mi
+%{ if var.node_group_workload_class != "" ~}
+  # It's OK to be deployed to the tools node group, too
+  tolerations:
+    - key: "group.msg.cloud.kubernetes/workload"
+      operator: "Equal"
+      value: ${var.node_group_workload_class}
+      effect: "NoSchedule"
+%{ endif ~}
+%{ if var.node_group_workload_class != "" ~}
+  affinity:
+    # Encourages deployment to the tools node group
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: "group.msg.cloud.kubernetes/workload"
+                operator: In
+                values:
+                  - ${var.node_group_workload_class}
+%{ endif ~}
 %{ if var.ensure_high_availability ~}
   topologySpreadConstraints:
     - labelSelector:

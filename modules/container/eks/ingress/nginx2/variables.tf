@@ -134,3 +134,9 @@ variable "ensure_high_availability" {
   type = bool
   default = true
 }
+
+variable node_group_workload_class {
+  description = "Class of the EKS node group the Elastic Cloud Operator for Kubernetes should be hosted on"
+  type = string
+  default = ""
+}
