@@ -103,3 +103,33 @@ variable "jaeger_agent_port" {
   type = number
   default = 0
 }
+
+variable "fluentbit_helm_chart_version" {
+  description = "Version number of the upstream FluentBit helm chart"
+  type = string
+  default = "0.39.0"
+}
+
+variable "elasticsearch_version" {
+  description = "Version of elastic search to deploy"
+  type = string
+  default = "8.10.4"
+}
+
+variable "elasticsearch_storage_class" {
+  description = "Kubernetes storage class to use for elastic search's persistent volume claims"
+  type = string
+  default = "ebs-csi-gp3"
+}
+
+variable "elasticsearch_storage_size" {
+  description = "Kubernetes storage size in GB to use for elastic search's persistent volume claims"
+  type = number
+  default = 32
+}
+
+variable "kibana_version" {
+  description = "Version of Kibana search to deploy; matches the Elasticsearch version by default"
+  type = string
+  default = ""
+}

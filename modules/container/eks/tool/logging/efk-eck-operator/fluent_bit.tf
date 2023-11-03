@@ -18,6 +18,7 @@ serviceAccount:
 rbac:
   create: true
   nodeAccess: false
+  eventsAccess: false
 
 podSecurityPolicy:
   create: false
@@ -74,16 +75,6 @@ prometheusRule:
 dashboards:
   enabled: false
 
-livenessProbe:
-  httpGet:
-    path: /
-    port: http
-
-readinessProbe:
-  httpGet:
-    path: /
-    port: http
-
 resources:
   limits:
     memory: 500Mi
@@ -113,14 +104,14 @@ networkPolicy:
 config:
   service: |
     [SERVICE]
-        Flush 1
         Daemon Off
-        Log_Level info
-        Parsers_File parsers.conf
-        Parsers_File custom_parsers.conf
+        Flush {{ .Values.flush }}
+        Log_Level {{ .Values.logLevel }}
+        Parsers_File /fluent-bit/etc/parsers.conf
+        Parsers_File /fluent-bit/etc/conf/custom_parsers.conf
         HTTP_Server On
         HTTP_Listen 0.0.0.0
-        HTTP_Port {{ .Values.service.port }}
+        HTTP_Port {{ .Values.metricsPort }}
         Health_Check On
 
   ## https://docs.fluentbit.io/manual/pipeline/inputs
@@ -128,8 +119,8 @@ config:
     [INPUT]
         Name                tail
         Tag                 kube.*
-        Exclude_Path        /var/log/containers/cloudwatch-agent*, /var/log/containers/fluent-bit*, /var/log/containers/aws-node*, /var/log/containers/kube-proxy*
         Path                /var/log/containers/*.log
+        Exclude_Path        /var/log/containers/cloudwatch-agent*, /var/log/containers/fluent-bit*, /var/log/containers/aws-node*, /var/log/containers/kube-proxy*
         Docker_Mode         On
         Docker_Mode_Flush   5
         Parser              docker
@@ -355,15 +346,26 @@ daemonSetVolumeMounts:
     readOnly: true
 %{ endif ~}
 
-args: []
 
-command: []
+command:
+  - /fluent-bit/bin/fluent-bit
+
+args:
+  - --workdir=/fluent-bit/etc
+  - --config=/fluent-bit/etc/conf/fluent-bit.conf
+
+logLevel: info
+
+flush: 1
+
+metricsPort: 2020
+
 EOT
 }
 
 resource helm_release fluent_bit {
   chart = "fluent-bit"
-  version = "0.21.7"
+  version = var.fluentbit_helm_chart_version
   name = "fluent-bit"
   dependency_update = true
   atomic = true

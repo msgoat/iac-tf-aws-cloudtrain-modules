@@ -1,4 +1,5 @@
 locals {
+  actual_kibana_version = var.kibana_version != "" ? var.kibana_version : var.elasticsearch_version
   # render helm chart values since direct passing of values does not work in all cases
   kibana_values = <<EOT
 ---
@@ -21,7 +22,7 @@ locals {
 
 # Version of Kibana.
 #
-version: 8.6.0
+version: ${local.actual_kibana_version}
 
 # Labels that will be applied to Kibana.
 #

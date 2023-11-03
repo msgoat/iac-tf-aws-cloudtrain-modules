@@ -26,7 +26,7 @@ locals {
 
 # Version of Elasticsearch.
 #
-version: 8.6.0
+version: ${var.elasticsearch_version}
 
 # Labels that will be applied to Elasticsearch.
 #
@@ -126,8 +126,8 @@ nodeSets:
         - ReadWriteOnce
         resources:
           requests:
-            storage: 32Gi # TODO: make configurable
-        storageClassName: ebs-csi-gp3 # TODO: make configurable
+            storage: ${var.elasticsearch_storage_size}Gi
+        storageClassName: ${var.elasticsearch_storage_class}
 EOT
 }
 
