@@ -103,3 +103,9 @@ variable "jaeger_agent_port" {
   type = number
   default = 0
 }
+
+variable "fluentbit_helm_chart_version" {
+  description = "Version number of the upstream FluentBit helm chart"
+  type = string
+  default = "0.39.0"
+}
