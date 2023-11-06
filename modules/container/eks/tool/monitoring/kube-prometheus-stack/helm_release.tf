@@ -250,6 +250,9 @@ grafana:
       url: https://grafana.net
     log:
       mode: console
+      level: info
+      console:
+        format: json
     paths:
       data: /var/lib/grafana/
       logs: /var/log/grafana

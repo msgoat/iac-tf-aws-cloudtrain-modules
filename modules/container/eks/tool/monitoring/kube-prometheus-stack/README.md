@@ -16,6 +16,4 @@ see: [outputs.tf](outputs.tf)
 
 | TODO                                                                                                              | Status | Last updated at |
 |-------------------------------------------------------------------------------------------------------------------| --- |-----------------|
-| Switch Grafana to JSON logging                                                                                    | OPEN | 2022-04-12      |
 | Encrypt all persistent volumes                                                                                    | OPEN | 2022-04-12      |
-| Make Grafana use a pre-built Kubernetes secret with the admin username and password | OPEN | 2022-04-12     |
