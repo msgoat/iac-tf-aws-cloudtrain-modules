@@ -48,7 +48,7 @@ variable "helm_release_name" {
 variable "helm_chart_version" {
   description = "Version of the Helm chart"
   type = string
-  default = "1.5.2"
+  default = "1.6.2"
 }
 
 variable "replica_count" {
@@ -61,4 +61,10 @@ variable "cert_manager_enabled" {
   description = "Controls if the AWS Load Controller relies on cert-manager to create the initial certificates"
   type = bool
   default = false
+}
+
+variable "ensure_high_availability" {
+  description = "Controls if a high availability of this service should be ensured by running at least two pods spread across AZs and nodes"
+  type = bool
+  default = true
 }
