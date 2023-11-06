@@ -1,4 +1,7 @@
 locals {
+  actual_replica_count = var.ensure_high_availability && var.replica_count < 2 ? 2 : var.replica_count
+  actual_elasticsearch_cluster_size = var.ensure_high_availability && var.elasticsearch_cluster_size < 3 ? 3 : var.elasticsearch_cluster_size
+  actual_elasticsearch_anti_affinity = var.ensure_high_availability ? "hard" : "soft"
   jaeger_agent_cpu_request = "125m"
   jaeger_agent_cpu_limit = "250m"
   jaeger_agent_memory_request = "128Mi"
@@ -10,6 +13,9 @@ provisionDataStore:
   cassandra: false
   elasticsearch: ${var.elasticsearch_strategy == "ES_INTERNAL" ? true : false}
   kafka: false
+
+networkPolicy:
+  enabled: false
 
 nameOverride: ""
 fullnameOverride: ""
@@ -44,6 +50,17 @@ storage:
 %{ endif ~}
   grpcPlugin:
     extraEnv: []
+
+# --- Elasticsearch sub-chart
+elasticsearch:
+  replicas: ${local.actual_elasticsearch_cluster_size}
+  antiAffinity: ${local.actual_elasticsearch_anti_affinity}
+  volumeClaimTemplate:
+    accessModes: ["ReadWriteOnce"]
+    resources:
+      requests:
+        storage: ${var.elasticsearch_storage_size}Gi
+    storageClassName: ${var.elasticsearch_storage_class}
 
 agent:
   podSecurityContext: {}
@@ -114,7 +131,7 @@ collector:
   cmdlineParams: {}
 %{ endif ~}
   basePath: /
-  replicaCount: ${var.replica_count}
+  replicaCount: ${local.actual_replica_count}
   autoscaling:
     enabled: false
     minReplicas: 2
@@ -133,8 +150,10 @@ collector:
       # nodePort:
     otlp:
       grpc:
+        name: otlp-grpc
         port: 4317
       http:
+        name: otlp-http
         port: 4318
   ingress:
     enabled: false
@@ -236,7 +255,7 @@ query:
   cmdlineParams: {}
 %{ endif ~}
   extraEnv: []
-  replicaCount: ${var.replica_count}
+  replicaCount: ${local.actual_replica_count}
   service:
     annotations: {}
     type: ClusterIP
