@@ -840,7 +840,7 @@ EOT
 
 resource helm_release kube_prometheus_stack {
   chart = "kube-prometheus-stack"
-  version = "45.24.0"
+  version = var.helm_chart_version
   name = var.helm_release_name
   dependency_update = true
   atomic = true

@@ -45,6 +45,12 @@ variable helm_release_name {
   default = "kube-prometheus-stack"
 }
 
+variable helm_chart_version {
+  description = "Version of the upstream Helm chart"
+  type = string
+  default = "52.1.0"
+}
+
 variable grafana_ui_enabled {
   description = "Controls if the Grafana UI should be exposed; default: true"
   type = bool
