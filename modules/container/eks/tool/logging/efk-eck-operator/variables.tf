@@ -133,3 +133,9 @@ variable "kibana_version" {
   type = string
   default = ""
 }
+
+variable "ensure_high_availability" {
+  description = "Controls if a high availability of this service should be ensured by running at least two pods spread across AZs and nodes"
+  type = bool
+  default = true
+}
