@@ -48,5 +48,11 @@ variable "helm_release_name" {
 variable "helm_chart_version" {
   description = "Version of the Helm chart"
   type = string
-  default = "9.27.0"
+  default = "9.29.4"
+}
+
+variable "ensure_high_availability" {
+  description = "Controls if a high availability of this service should be ensured by running at least two pods spread across AZs and nodes"
+  type = bool
+  default = true
 }
