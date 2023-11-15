@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 ### Fixed
 
+## [2.2.1] - 2023-11-15
+### Changed
+- Module container/eks/tool/logging/efk-eck-operator: fluent bit parses JSON formatted log messages correctly now
+
 ## [2.2.0] - 2023-11-06
 ### Changed
 - Module container/eks/tool/monitoring/kube-prometheus-stack: upgraded helm chart version to 52.1.0 and app version to 0.68.0
