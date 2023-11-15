@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.2.1] - 2023-11-15
 ### Changed
 - Module container/eks/tool/logging/efk-eck-operator: fluent bit parses JSON formatted log messages correctly now
+- Module container/eks/tool/monitoring/kube-prometheus-stack: prometheus detects service monitors outside of namespace monitoring correctly now
 
 ## [2.2.0] - 2023-11-06
 ### Changed
