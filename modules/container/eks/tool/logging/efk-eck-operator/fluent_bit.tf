@@ -121,14 +121,13 @@ config:
         Tag                 kube.*
         Path                /var/log/containers/*.log
         Exclude_Path        /var/log/containers/cloudwatch-agent*, /var/log/containers/fluent-bit*, /var/log/containers/aws-node*, /var/log/containers/kube-proxy*
-        Docker_Mode         On
-        Docker_Mode_Flush   5
-        Parser              docker
+        multiline.parser    docker, cri
         Mem_Buf_Limit       64MB
         Refresh_Interval    10
         Rotate_Wait         30
         Read_from_Head      True
         Skip_Long_Lines     On
+        Skip_Empty_Lines    On
         DB                  /var/fluent-bit/state/tail-containers-state.db
         DB.Sync             Normal
 
@@ -211,12 +210,13 @@ config:
         Match              k8s
         Host               ${local.elasticsearch_service_name}
         Port               ${local.elasticsearch_service_port}
+        Type               _doc
         Logstash_Format    On
-        Retry_Limit        False
-        Type               flb_type
-        Time_Key           @flb-timestamp
-        Replace_Dots       On
         Logstash_Prefix    k8s-${var.eks_cluster_name}
+        Time_Key           @flb-timestamp
+        Generate_ID        On
+        Replace_Dots       On
+        Retry_Limit        3
         Suppress_Type_Name On
         HTTP_User          $${ELASTICSEARCH_USERNAME}
         HTTP_Passwd        $${ELASTICSEARCH_PASSWORD}
@@ -232,12 +232,13 @@ config:
         Match              sys
         Host               ${local.elasticsearch_service_name}
         Port               ${local.elasticsearch_service_port}
+        Type               _doc
         Logstash_Format    On
-        Retry_Limit        False
-        Type               flb_type
-        Time_Key           @flb-timestamp
-        Replace_Dots       On
         Logstash_Prefix    sys-${var.eks_cluster_name}
+        Time_Key           @flb-timestamp
+        Generate_ID        On
+        Replace_Dots       On
+        Retry_Limit        3
         Suppress_Type_Name On
         HTTP_User          $${ELASTICSEARCH_USERNAME}
         HTTP_Passwd        $${ELASTICSEARCH_PASSWORD}
@@ -253,12 +254,13 @@ config:
         Match              tools
         Host               ${local.elasticsearch_service_name}
         Port               ${local.elasticsearch_service_port}
+        Type               _doc
         Logstash_Format    On
-        Retry_Limit        False
-        Type               flb_type
-        Time_Key           @flb-timestamp
-        Replace_Dots       On
         Logstash_Prefix    tools-${var.eks_cluster_name}
+        Time_Key           @flb-timestamp
+        Generate_ID        On
+        Replace_Dots       On
+        Retry_Limit        3
         Suppress_Type_Name On
         HTTP_User          $${ELASTICSEARCH_USERNAME}
         HTTP_Passwd        $${ELASTICSEARCH_PASSWORD}
@@ -274,12 +276,13 @@ config:
         Match              apps
         Host               ${local.elasticsearch_service_name}
         Port               ${local.elasticsearch_service_port}
+        Type               _doc
         Logstash_Format    On
-        Retry_Limit        False
-        Type               flb_type
-        Time_Key           @flb-timestamp
-        Replace_Dots       On
         Logstash_Prefix    apps-${var.eks_cluster_name}
+        Time_Key           @flb-timestamp
+        Generate_ID        On
+        Replace_Dots       On
+        Retry_Limit        3
         Suppress_Type_Name On
         HTTP_User          $${ELASTICSEARCH_USERNAME}
         HTTP_Passwd        $${ELASTICSEARCH_PASSWORD}
