@@ -755,13 +755,13 @@ prometheus:
     ruleNamespaceSelector: {}
     ruleSelectorNilUsesHelmValues: false
     ruleSelector: {}
-    serviceMonitorSelectorNilUsesHelmValues: true
+    serviceMonitorSelectorNilUsesHelmValues: false
     serviceMonitorSelector: {}
     serviceMonitorNamespaceSelector: {}
-    podMonitorSelectorNilUsesHelmValues: true
+    podMonitorSelectorNilUsesHelmValues: false
     podMonitorSelector: {}
     podMonitorNamespaceSelector: {}
-    probeSelectorNilUsesHelmValues: true
+    probeSelectorNilUsesHelmValues: false
     probeSelector: {}
     probeNamespaceSelector: {}
     retention: ${var.retention_days}d
