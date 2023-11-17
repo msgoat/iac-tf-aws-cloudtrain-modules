@@ -11,10 +11,13 @@ terraform {
     helm = {
       version = "~> 2.0"
     }
+    random = {
+      version = "~> 3.0"
+    }
   }
 }
 
 locals {
-  module_common_tags = merge(var.common_tags, { TerraformModuleName = "container/eks/ingress/traefik" })
+  module_common_tags = merge(var.common_tags, { TerraformModuleName = "container/eks/ingress/nginx2" })
 }
 

@@ -1,4 +1,6 @@
 locals {
+  actual_replica_count = var.ensure_high_availability && var.replica_count < 2 ? 2 : var.replica_count
+  helm_chart_name = "cert-manager"
   cert_manager_values = <<EOT
 # Default values for cert-manager.
 # This is a YAML-formatted file.
@@ -54,7 +56,7 @@ global:
 
 installCRDs: true
 
-replicaCount: ${var.replica_count}
+replicaCount: ${local.actual_replica_count}
 
 strategy: {}
   # type: RollingUpdate
@@ -224,17 +226,27 @@ affinity: {}
 #     effect: NoSchedule
 tolerations: []
 
-# expects input structure as per specification https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#topologyspreadconstraint-v1-core
-# for example:
-#   topologySpreadConstraints:
-#   - maxSkew: 2
-#     topologyKey: topology.kubernetes.io/zone
-#     whenUnsatisfiable: ScheduleAnyway
-#     labelSelector:
-#       matchLabels:
-#         app.kubernetes.io/instance: cert-manager
-#         app.kubernetes.io/component: controller
+%{ if var.ensure_high_availability ~}
+topologySpreadConstraints:
+- labelSelector:
+    matchLabels:
+      app.kubernetes.io/name: ${local.helm_chart_name}
+      app.kubernetes.io/instance: ${var.helm_release_name}
+      app.kubernetes.io/component: "controller"
+  topologyKey: topology.kubernetes.io/zone
+  maxSkew: 1
+  whenUnsatisfiable: ScheduleAnyway
+- labelSelector:
+    matchLabels:
+      app.kubernetes.io/name: ${local.helm_chart_name}
+      app.kubernetes.io/instance: ${var.helm_release_name}
+      app.kubernetes.io/component: "controller"
+  topologyKey: kubernetes.io/hostname
+  maxSkew: 1
+  whenUnsatisfiable: ScheduleAnyway
+%{ else ~}
 topologySpreadConstraints: []
+%{ endif ~}
 
 webhook:
   replicaCount: 1
@@ -436,7 +448,7 @@ webhook:
 
 cainjector:
   enabled: true
-  replicaCount: 1
+  replicaCount: ${local.actual_replica_count}
 
   strategy: {}
     # type: RollingUpdate
@@ -495,7 +507,27 @@ cainjector:
 
   tolerations: []
 
+%{ if var.ensure_high_availability ~}
+  topologySpreadConstraints:
+  - labelSelector:
+      matchLabels:
+        app.kubernetes.io/name: "cainjector"
+        app.kubernetes.io/instance: ${var.helm_release_name}
+        app.kubernetes.io/component: "cainjector"
+    topologyKey: topology.kubernetes.io/zone
+    maxSkew: 1
+    whenUnsatisfiable: ScheduleAnyway
+  - labelSelector:
+      matchLabels:
+        app.kubernetes.io/name: "cainjector"
+        app.kubernetes.io/instance: ${var.helm_release_name}
+        app.kubernetes.io/component: "cainjector"
+    topologyKey: kubernetes.io/hostname
+    maxSkew: 1
+    whenUnsatisfiable: ScheduleAnyway
+%{ else ~}
   topologySpreadConstraints: []
+%{ endif ~}
 
   # Optional additional labels to add to the CA Injector Pods
   podLabels: {}
@@ -618,7 +650,7 @@ EOT
 }
 
 resource "helm_release" "cert_manager" {
-  chart             = "cert-manager"
+  chart             = local.helm_chart_name
   repository        = "https://charts.jetstack.io"
   name              = var.helm_release_name
   version           = var.helm_chart_version

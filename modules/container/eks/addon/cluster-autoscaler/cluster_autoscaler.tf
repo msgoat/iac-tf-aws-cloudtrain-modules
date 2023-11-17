@@ -1,4 +1,5 @@
 locals {
+  helm_chart_name = "cluster-autoscaler"
   autoscaler_values = <<EOT
 replicaCount: 2
 autoDiscovery:
@@ -94,11 +95,31 @@ serviceMonitor:
     release: prometheus-operator
   # serviceMonitor.path -- The path to scrape for metrics; autoscaler exposes `/metrics` (this is standard)
   path: /metrics
+
+%{ if var.ensure_high_availability ~}
+topologySpreadConstraints:
+- labelSelector:
+    matchLabels:
+      app.kubernetes.io/name: ${var.helm_release_name}
+      app.kubernetes.io/instance: ${var.helm_release_name}
+  topologyKey: topology.kubernetes.io/zone
+  maxSkew: 1
+  whenUnsatisfiable: ScheduleAnyway
+- labelSelector:
+    matchLabels:
+      app.kubernetes.io/name: ${var.helm_release_name}
+      app.kubernetes.io/instance: ${var.helm_release_name}
+  topologyKey: kubernetes.io/hostname
+  maxSkew: 1
+  whenUnsatisfiable: ScheduleAnyway
+%{ else ~}
+topologySpreadConstraints: []
+%{ endif ~}
 EOT
 }
 
 resource "helm_release" "autoscaler" {
-  chart             = "cluster-autoscaler"
+  chart             = local.helm_chart_name
   repository        = "https://kubernetes.github.io/autoscaler"
   name              = var.helm_release_name
   version           = var.helm_chart_version

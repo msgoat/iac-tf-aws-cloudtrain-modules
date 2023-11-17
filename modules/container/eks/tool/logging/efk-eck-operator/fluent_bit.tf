@@ -18,6 +18,7 @@ serviceAccount:
 rbac:
   create: true
   nodeAccess: false
+  eventsAccess: false
 
 podSecurityPolicy:
   create: false
@@ -74,16 +75,6 @@ prometheusRule:
 dashboards:
   enabled: false
 
-livenessProbe:
-  httpGet:
-    path: /
-    port: http
-
-readinessProbe:
-  httpGet:
-    path: /
-    port: http
-
 resources:
   limits:
     memory: 500Mi
@@ -113,14 +104,14 @@ networkPolicy:
 config:
   service: |
     [SERVICE]
-        Flush 1
         Daemon Off
-        Log_Level info
-        Parsers_File parsers.conf
-        Parsers_File custom_parsers.conf
+        Flush {{ .Values.flush }}
+        Log_Level {{ .Values.logLevel }}
+        Parsers_File /fluent-bit/etc/parsers.conf
+        Parsers_File /fluent-bit/etc/conf/custom_parsers.conf
         HTTP_Server On
         HTTP_Listen 0.0.0.0
-        HTTP_Port {{ .Values.service.port }}
+        HTTP_Port {{ .Values.metricsPort }}
         Health_Check On
 
   ## https://docs.fluentbit.io/manual/pipeline/inputs
@@ -128,16 +119,15 @@ config:
     [INPUT]
         Name                tail
         Tag                 kube.*
-        Exclude_Path        /var/log/containers/cloudwatch-agent*, /var/log/containers/fluent-bit*, /var/log/containers/aws-node*, /var/log/containers/kube-proxy*
         Path                /var/log/containers/*.log
-        Docker_Mode         On
-        Docker_Mode_Flush   5
-        Parser              docker
+        Exclude_Path        /var/log/containers/cloudwatch-agent*, /var/log/containers/fluent-bit*, /var/log/containers/aws-node*, /var/log/containers/kube-proxy*
+        multiline.parser    docker, cri
         Mem_Buf_Limit       64MB
         Refresh_Interval    10
         Rotate_Wait         30
         Read_from_Head      True
         Skip_Long_Lines     On
+        Skip_Empty_Lines    On
         DB                  /var/fluent-bit/state/tail-containers-state.db
         DB.Sync             Normal
 
@@ -220,12 +210,13 @@ config:
         Match              k8s
         Host               ${local.elasticsearch_service_name}
         Port               ${local.elasticsearch_service_port}
+        Type               _doc
         Logstash_Format    On
-        Retry_Limit        False
-        Type               flb_type
-        Time_Key           @flb-timestamp
-        Replace_Dots       On
         Logstash_Prefix    k8s-${var.eks_cluster_name}
+        Time_Key           @flb-timestamp
+        Generate_ID        On
+        Replace_Dots       On
+        Retry_Limit        3
         Suppress_Type_Name On
         HTTP_User          $${ELASTICSEARCH_USERNAME}
         HTTP_Passwd        $${ELASTICSEARCH_PASSWORD}
@@ -241,12 +232,13 @@ config:
         Match              sys
         Host               ${local.elasticsearch_service_name}
         Port               ${local.elasticsearch_service_port}
+        Type               _doc
         Logstash_Format    On
-        Retry_Limit        False
-        Type               flb_type
-        Time_Key           @flb-timestamp
-        Replace_Dots       On
         Logstash_Prefix    sys-${var.eks_cluster_name}
+        Time_Key           @flb-timestamp
+        Generate_ID        On
+        Replace_Dots       On
+        Retry_Limit        3
         Suppress_Type_Name On
         HTTP_User          $${ELASTICSEARCH_USERNAME}
         HTTP_Passwd        $${ELASTICSEARCH_PASSWORD}
@@ -262,12 +254,13 @@ config:
         Match              tools
         Host               ${local.elasticsearch_service_name}
         Port               ${local.elasticsearch_service_port}
+        Type               _doc
         Logstash_Format    On
-        Retry_Limit        False
-        Type               flb_type
-        Time_Key           @flb-timestamp
-        Replace_Dots       On
         Logstash_Prefix    tools-${var.eks_cluster_name}
+        Time_Key           @flb-timestamp
+        Generate_ID        On
+        Replace_Dots       On
+        Retry_Limit        3
         Suppress_Type_Name On
         HTTP_User          $${ELASTICSEARCH_USERNAME}
         HTTP_Passwd        $${ELASTICSEARCH_PASSWORD}
@@ -283,12 +276,13 @@ config:
         Match              apps
         Host               ${local.elasticsearch_service_name}
         Port               ${local.elasticsearch_service_port}
+        Type               _doc
         Logstash_Format    On
-        Retry_Limit        False
-        Type               flb_type
-        Time_Key           @flb-timestamp
-        Replace_Dots       On
         Logstash_Prefix    apps-${var.eks_cluster_name}
+        Time_Key           @flb-timestamp
+        Generate_ID        On
+        Replace_Dots       On
+        Retry_Limit        3
         Suppress_Type_Name On
         HTTP_User          $${ELASTICSEARCH_USERNAME}
         HTTP_Passwd        $${ELASTICSEARCH_PASSWORD}
@@ -355,15 +349,26 @@ daemonSetVolumeMounts:
     readOnly: true
 %{ endif ~}
 
-args: []
 
-command: []
+command:
+  - /fluent-bit/bin/fluent-bit
+
+args:
+  - --workdir=/fluent-bit/etc
+  - --config=/fluent-bit/etc/conf/fluent-bit.conf
+
+logLevel: info
+
+flush: 1
+
+metricsPort: 2020
+
 EOT
 }
 
 resource helm_release fluent_bit {
   chart = "fluent-bit"
-  version = "0.21.7"
+  version = var.fluentbit_helm_chart_version
   name = "fluent-bit"
   dependency_update = true
   atomic = true

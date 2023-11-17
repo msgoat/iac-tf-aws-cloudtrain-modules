@@ -48,7 +48,7 @@ variable helm_release_name {
 variable helm_chart_version {
   description = "Version of the Helm chart which deploys Jaeger"
   type = string
-  default = "0.69.1"
+  default = "0.72.0"
 }
 
 variable replica_count {
@@ -101,4 +101,34 @@ variable "prometheus_operator_enabled" {
   description = "Controls if prometheus operator is installed and pod/service monitors should be enabled"
   type = bool
   default = false
+}
+
+variable "elasticsearch_version" {
+  description = "Version of elastic search to deploy"
+  type = string
+  default = "7.17.4"
+}
+
+variable "elasticsearch_storage_class" {
+  description = "Kubernetes storage class to use for elastic search's persistent volume claims"
+  type = string
+  default = "ebs-csi-gp3"
+}
+
+variable "elasticsearch_storage_size" {
+  description = "Kubernetes storage size in GB to use for elastic search's persistent volume claims"
+  type = number
+  default = 32
+}
+
+variable "elasticsearch_cluster_size" {
+  description = "Number of nodes in the Elasticsearch cluster; may be overridden if ensure_high_availability is true"
+  type = number
+  default = 1
+}
+
+variable "ensure_high_availability" {
+  description = "Controls if a high availability of this service should be ensured by running at least two pods spread across AZs and nodes"
+  type = bool
+  default = true
 }

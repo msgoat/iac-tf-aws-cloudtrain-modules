@@ -54,7 +54,7 @@ variable "helm_release_name" {
 variable "helm_chart_version" {
   description = "Version of the Helm chart"
   type = string
-  default = "v1.11.1"
+  default = "v1.13.2"
 }
 
 variable "replica_count" {
@@ -71,4 +71,10 @@ variable "hosted_zone_name" {
 variable "letsencrypt_account_name" {
   description = "Lets Encrypt Account name to be used to request certificates"
   type = string
+}
+
+variable "ensure_high_availability" {
+  description = "Controls if a high availability of this service should be ensured by running at least two pods spread across AZs and nodes"
+  type = bool
+  default = true
 }

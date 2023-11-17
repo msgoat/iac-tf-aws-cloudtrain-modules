@@ -1,4 +1,5 @@
 locals {
+  helm_chart_name = "aws-load-balancer-controller"
   controller_replicas = var.replica_count
   controller_pdb_enabled = local.controller_replicas > 1 ? true : false
   controller_values = <<EOT
@@ -46,7 +47,25 @@ affinity: {}
 
 configureDefaultAffinity: true
 
-topologySpreadConstraints: {}
+%{ if var.ensure_high_availability ~}
+topologySpreadConstraints:
+- labelSelector:
+    matchLabels:
+      app.kubernetes.io/name: ${local.helm_chart_name}
+      app.kubernetes.io/instance: ${var.helm_release_name}
+  topologyKey: topology.kubernetes.io/zone
+  maxSkew: 1
+  whenUnsatisfiable: ScheduleAnyway
+- labelSelector:
+    matchLabels:
+      app.kubernetes.io/name: ${local.helm_chart_name}
+      app.kubernetes.io/instance: ${var.helm_release_name}
+  topologyKey: kubernetes.io/hostname
+  maxSkew: 1
+  whenUnsatisfiable: ScheduleAnyway
+%{ else ~}
+topologySpreadConstraints: []
+%{ endif ~}
 
 updateStrategy: {}
 
@@ -138,7 +157,7 @@ EOT
 }
 
 resource "helm_release" "controller" {
-  chart             = "aws-load-balancer-controller"
+  chart             = local.helm_chart_name
   repository        = "https://aws.github.io/eks-charts"
   name              = var.helm_release_name
   version           = var.helm_chart_version

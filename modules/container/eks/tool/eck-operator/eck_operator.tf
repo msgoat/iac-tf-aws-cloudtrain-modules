@@ -1,4 +1,5 @@
 locals {
+  actual_replica_count = var.ensure_high_availability && var.replica_count < 2 ? 2 : var.replica_count
   # render helm chart values since direct passing of values does not work in all cases
   eck_values = <<EOT
 nameOverride: ""
@@ -8,7 +9,7 @@ managedNamespaces: []
 
 installCRDs: true
 
-replicaCount: ${var.replica_count}
+replicaCount: ${local.actual_replica_count}
 
 priorityClassName: ""
 
@@ -55,6 +56,25 @@ affinity:
               operator: In
               values:
                 - ${var.node_group_workload_class}
+%{ endif ~}
+%{ if var.ensure_high_availability ~}
+topologySpreadConstraints:
+  - labelSelector:
+      matchLabels:
+        app.kubernetes.io/name: '{{ include "eck-operator" . }}'
+        app.kubernetes.io/instance: '{{ .Release.Name }}'
+    topologyKey: topology.kubernetes.io/zone
+    maxSkew: 1
+    whenUnsatisfiable: ScheduleAnyway
+  - labelSelector:
+      matchLabels:
+        app.kubernetes.io/name: '{{ include "eck-operator" . }}'
+        app.kubernetes.io/instance: '{{ .Release.Name }}'
+    topologyKey: kubernetes.io/hostname
+    maxSkew: 1
+    whenUnsatisfiable: ScheduleAnyway
+%{ else ~}
+  topologySpreadConstraints: []
 %{ endif ~}
 
 env: []

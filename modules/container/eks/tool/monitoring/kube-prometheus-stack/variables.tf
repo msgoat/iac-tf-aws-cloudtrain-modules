@@ -45,6 +45,12 @@ variable helm_release_name {
   default = "kube-prometheus-stack"
 }
 
+variable helm_chart_version {
+  description = "Version of the upstream Helm chart"
+  type = string
+  default = "52.1.0"
+}
+
 variable grafana_ui_enabled {
   description = "Controls if the Grafana UI should be exposed; default: true"
   type = bool
@@ -143,4 +149,10 @@ variable cert_manager_cluster_issuer_name {
   description = "Name of the ClusterIssuer used to issue certificates; required if `cert_manager_enabled` is true"
   type = string
   default = ""
+}
+
+variable "ensure_high_availability" {
+  description = "Controls if a high availability of this service should be ensured by running at least two pods spread across AZs and nodes"
+  type = bool
+  default = true
 }

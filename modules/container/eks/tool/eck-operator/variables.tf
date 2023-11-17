@@ -32,7 +32,7 @@ variable kubernetes_namespace_name {
 variable helm_chart_version {
   description = "Version of the Helm chart to use to deploy the Elastic Cloud Operator for Kubernetes"
   type = string
-  default = "2.7.0"
+  default = "2.9.0"
 }
 
 variable helm_release_name {
@@ -51,4 +51,10 @@ variable node_group_workload_class {
   description = "Class of the EKS node group the Elastic Cloud Operator for Kubernetes should be hosted on"
   type = string
   default = ""
+}
+
+variable "ensure_high_availability" {
+  description = "Controls if a high availability of this service should be ensured by running at least two pods spread across AZs and nodes"
+  type = bool
+  default = true
 }

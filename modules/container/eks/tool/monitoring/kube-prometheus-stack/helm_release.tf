@@ -250,6 +250,9 @@ grafana:
       url: https://grafana.net
     log:
       mode: console
+      level: info
+      console:
+        format: json
     paths:
       data: /var/lib/grafana/
       logs: /var/log/grafana
@@ -752,13 +755,13 @@ prometheus:
     ruleNamespaceSelector: {}
     ruleSelectorNilUsesHelmValues: false
     ruleSelector: {}
-    serviceMonitorSelectorNilUsesHelmValues: true
+    serviceMonitorSelectorNilUsesHelmValues: false
     serviceMonitorSelector: {}
     serviceMonitorNamespaceSelector: {}
-    podMonitorSelectorNilUsesHelmValues: true
+    podMonitorSelectorNilUsesHelmValues: false
     podMonitorSelector: {}
     podMonitorNamespaceSelector: {}
-    probeSelectorNilUsesHelmValues: true
+    probeSelectorNilUsesHelmValues: false
     probeSelector: {}
     probeNamespaceSelector: {}
     retention: ${var.retention_days}d
@@ -840,7 +843,7 @@ EOT
 
 resource helm_release kube_prometheus_stack {
   chart = "kube-prometheus-stack"
-  version = "45.24.0"
+  version = var.helm_chart_version
   name = var.helm_release_name
   dependency_update = true
   atomic = true
