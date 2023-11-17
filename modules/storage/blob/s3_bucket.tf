@@ -85,7 +85,7 @@ resource aws_s3_bucket_policy Deny_cross_account_access {
     Id        = "BUCKET-POLICY"
     Statement = [
       {
-        Sid       = "DenyUnencryptedObjectUploads"
+        Sid       = "DenyCrossAccountAccess"
         Effect    = "Deny"
         Principal = "*"
         Action    = "s3:*"
