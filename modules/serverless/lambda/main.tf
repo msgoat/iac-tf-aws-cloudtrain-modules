@@ -15,7 +15,7 @@ terraform {
 
 # Local values used in this module
 locals {
-  module_common_tags = merge(var.common_tags, { TerraformModuleName = "compute/ec2-single" })
+  module_common_tags = merge(var.common_tags, { TerraformModuleName = "serverless/lambda" })
 }
 
 data aws_region current {
