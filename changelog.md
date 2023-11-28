@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 ### Fixed
 
+## [2.3.0] - 2023-11-28
+### Added
+- Added new module serverless/lambda
+
 ## [2.2.1] - 2023-11-15
 ### Changed
 - Module container/eks/tool/logging/efk-eck-operator: fluent bit parses JSON formatted log messages correctly now
