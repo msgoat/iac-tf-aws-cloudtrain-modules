@@ -32,8 +32,15 @@ resource aws_s3_bucket_server_side_encryption_configuration blob {
   bucket = aws_s3_bucket.blob.id
   rule {
     apply_server_side_encryption_by_default {
-      kms_master_key_id = var.custom_encryption_kms_key_arn
       sse_algorithm     = "aws:kms"
+
+      # Include kms_master_key_id if it's provided, otherwise exclude it
+      dynamic "kms_master_key_id" {
+        for_each = var.custom_encryption_kms_key_arn != null ? [1] : []
+        content {
+          kms_master_key_id = var.custom_encryption_kms_key_arn
+        }
+      }
     }
     bucket_key_enabled = true
   }
