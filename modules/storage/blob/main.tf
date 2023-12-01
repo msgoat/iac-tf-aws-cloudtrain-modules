@@ -18,3 +18,5 @@ locals {
 data aws_region current {
   name = var.region_name
 }
+
+data "aws_caller_identity" "current" {}
