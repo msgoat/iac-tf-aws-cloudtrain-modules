@@ -51,6 +51,7 @@ variable "logging_bucket_name" {
 variable "custom_encryption_kms_key_arn" {
   description = "ARN of the KMS key used for bucket encryption"
   type        = string
+  default     = ""
 }
 
 variable "deny_unencrypted_uploads" {

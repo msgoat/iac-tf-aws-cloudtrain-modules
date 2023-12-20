@@ -36,7 +36,7 @@ resource aws_s3_bucket_server_side_encryption_configuration blob {
 
       # Include kms_master_key_id if it's provided, otherwise exclude it
       dynamic "kms_master_key_id" {
-        for_each = var.custom_encryption_kms_key_arn != null ? [1] : []
+        for_each = var.custom_encryption_kms_key_arn != "" ? [1] : []
         content {
           kms_master_key_id = var.custom_encryption_kms_key_arn
         }
