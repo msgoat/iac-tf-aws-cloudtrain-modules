@@ -1,6 +1,6 @@
 output db_instance_name {
   description = "Fully qualified name of the DB instance"
-  value = aws_db_instance.postgresql.name
+  value = aws_db_instance.postgresql.identifier
 }
 
 output db_instance_id {
