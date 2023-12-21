@@ -31,31 +31,31 @@ variable bucket_name {
 }
 
 variable versioning_enabled {
-  description = "Controls if blobs should be versioned; default false"
+  description = "Controls if blobs should be versioned. Default: no versioning."
   type        = bool
   default     = false
 }
 
 variable public_access_enabled {
-  description = "Controls if blobs should be accessible via internet; default false"
+  description = "Controls if blobs should be accessible via internet. Default: no public access."
   type        = bool
   default     = false
 }
 
 variable "logging_bucket_name" {
-  description = "Name for an optional logging bucket"
+  description = "Optional name for a logging bucket; triggers creation of an additional logging bucket, if specified. Default: no logging."
   type        = string
   default     = null
 }
 
 variable "custom_encryption_kms_key_arn" {
-  description = "ARN of the KMS key used for bucket encryption"
+  description = "Optional identifier of a customer-managed-key; triggers server-side encryption with customer-managed keys, if specified. Default: AWS managed keys."
   type        = string
-  default     = ""
+  default     = null
 }
 
 variable "deny_unencrypted_uploads" {
-  description = "Attaches a S3 bucket policy to prevent unencrypted objects upload"
+  description = "Attaches a S3 bucket policy to prevent unencrypted objects upload. Default: unencrypted uploads are denied."
   type        = bool
   default     = true
 }

@@ -9,7 +9,7 @@ resource aws_s3_bucket blob {
 }
 
 // enable versioning on S3 bucket to be able to recover from unintended state changes
-resource aws_s3_bucket_versioning blob {
+resource aws_s3_bucket_versioning versioning {
   count  = var.versioning_enabled ? 1 : 0
   bucket = aws_s3_bucket.blob.id
   versioning_configuration {
@@ -27,19 +27,27 @@ resource aws_s3_bucket_public_access_block block_public_access {
   restrict_public_buckets = true
 }
 
-// enable default encryption for data-at-rest with SSE-S3 encryption
-resource aws_s3_bucket_server_side_encryption_configuration blob {
+// enable default encryption for data-at-rest with SSE-S3 encryption if no KMS key is specified
+resource aws_s3_bucket_server_side_encryption_configuration default {
+  count = var.custom_encryption_kms_key_arn == null ? 1 : 0
   bucket = aws_s3_bucket.blob.id
   rule {
     apply_server_side_encryption_by_default {
       sse_algorithm     = "aws:kms"
+    }
+    bucket_key_enabled = true
+  }
+}
 
-      # Include kms_master_key_id if it's provided, otherwise exclude it
-      dynamic "kms_master_key_id" {
-        for_each = var.custom_encryption_kms_key_arn != "" ? [1] : []
-        content {
+// enable custom encryption for data-at-rest with CMK encryption if a KMS key is specified
+resource aws_s3_bucket_server_side_encryption_configuration custom {
+  count = var.custom_encryption_kms_key_arn != null ? 1 : 0
+  bucket = aws_s3_bucket.blob.id
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm     = "aws:kms"
+      kms_master_key_id {
           kms_master_key_id = var.custom_encryption_kms_key_arn
-        }
       }
     }
     bucket_key_enabled = true
@@ -47,7 +55,7 @@ resource aws_s3_bucket_server_side_encryption_configuration blob {
 }
 
 // optionally enable logging to a target bucket
-resource aws_s3_bucket_logging main {
+resource aws_s3_bucket_logging logging {
   count  = var.logging_bucket_name != null ? 1 : 0
   bucket = aws_s3_bucket.blob.id
 
@@ -84,7 +92,7 @@ resource aws_s3_bucket_policy deny_http_access {
   })
 }
 
-resource aws_s3_bucket_policy Deny_cross_account_access {
+resource aws_s3_bucket_policy deny_cross_account_access {
   bucket = aws_s3_bucket.blob.id
 
   policy = jsonencode({
@@ -111,7 +119,7 @@ resource aws_s3_bucket_policy Deny_cross_account_access {
 }
 
 resource aws_s3_bucket_policy deny_unencrypted_uploads {
-  count  = var.deny_unencrypted_uploads == true ? 1 : 0
+  count  = var.deny_unencrypted_uploads ? 1 : 0
   bucket = aws_s3_bucket.blob.id
 
   policy = jsonencode({

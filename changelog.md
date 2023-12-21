@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 ### Fixed
 
-## [2.3.1] - 2023-12-20
+## [2.3.1] - 2023-12-21
 ### Fixed
 - Module storage/blob: KMS key ID for customer managed encryption key is optional now
 
