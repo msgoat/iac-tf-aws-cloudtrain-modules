@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 ### Fixed
 
+## [2.4.0] - 2023-12-21
+### Changed
+- Module database/postgresql/rds: upgraded default PostgreSQL version to 14.7
+- Module database/postgresql/rds: added database instance name to outputs
+
 ## [2.3.2] - 2023-12-21
 ### Fixed
 - Module storage/blob: kept same name of encryption resource to be compatible with existing infrastructure
