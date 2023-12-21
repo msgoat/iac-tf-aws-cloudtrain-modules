@@ -28,20 +28,8 @@ resource aws_s3_bucket_public_access_block block_public_access {
 }
 
 // enable default encryption for data-at-rest with SSE-S3 encryption if no KMS key is specified
-resource aws_s3_bucket_server_side_encryption_configuration default {
-  count = var.custom_encryption_kms_key_arn == null ? 1 : 0
-  bucket = aws_s3_bucket.blob.id
-  rule {
-    apply_server_side_encryption_by_default {
-      sse_algorithm     = "aws:kms"
-    }
-    bucket_key_enabled = true
-  }
-}
-
 // enable custom encryption for data-at-rest with CMK encryption if a KMS key is specified
-resource aws_s3_bucket_server_side_encryption_configuration custom {
-  count = var.custom_encryption_kms_key_arn != null ? 1 : 0
+resource aws_s3_bucket_server_side_encryption_configuration blob {
   bucket = aws_s3_bucket.blob.id
   rule {
     apply_server_side_encryption_by_default {
