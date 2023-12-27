@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 ### Fixed
 
+## [2.4.1] - 2023-12-27
+### Fixed
+- Module storage/blob: improved handling of S3 bucket policies to avoid issues with multiple policies
+
 ## [2.4.0] - 2023-12-21
 ### Changed
 - Module database/postgresql/rds: upgraded default PostgreSQL version to 14.7
