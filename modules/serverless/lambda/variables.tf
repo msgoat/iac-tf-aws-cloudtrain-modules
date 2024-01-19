@@ -87,11 +87,15 @@ variable "handler" {
 
 variable "event_source" {
   type        = string
-  description = "Lambda event source, allowed values are sns, sqs or api"
+  description = "Lambda event source, allowed values are sns, sqs, api or null"
+
+  default = "none"
 
   validation {
-    condition     = contains(["sqs", "sns", "api"], var.event_source)
-    error_message = "Allowed values for input_parameter are \"sqs\", \"sns\", or \"api\"."
+    condition     = contains([
+      "sqs", "sns", "api", "none"
+    ], var.event_source)
+    error_message = "Allowed values for input_parameter are \"sqs\", \"sns\", \"api\" or \"none\"."
   }
 }
 
