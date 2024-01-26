@@ -9,6 +9,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 ### Fixed
 
+## [2.4.1] - 2023-12-27
+### Fixed
+- Module storage/blob: improved handling of S3 bucket policies to avoid issues with multiple policies
+
+## [2.4.0] - 2023-12-21
+### Changed
+- Module database/postgresql/rds: upgraded default PostgreSQL version to 14.7
+- Module database/postgresql/rds: added database instance name to outputs
+
+## [2.3.2] - 2023-12-21
+### Fixed
+- Module storage/blob: kept same name of encryption resource to be compatible with existing infrastructure
+
+## [2.3.1] - 2023-12-21
+### Fixed
+- Module storage/blob: KMS key ID for customer managed encryption key is optional now
+
+## [2.3.0] - 2023-11-28
+### Added
+- Added new module serverless/lambda
+
 ## [2.2.1] - 2023-11-15
 ### Changed
 - Module container/eks/tool/logging/efk-eck-operator: fluent bit parses JSON formatted log messages correctly now

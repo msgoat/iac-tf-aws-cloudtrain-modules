@@ -1,3 +1,8 @@
+output db_instance_name {
+  description = "Fully qualified name of the DB instance"
+  value = aws_db_instance.postgresql.identifier
+}
+
 output db_instance_id {
   description = "Unique identifier of the DB instance"
   value = aws_db_instance.postgresql.arn
