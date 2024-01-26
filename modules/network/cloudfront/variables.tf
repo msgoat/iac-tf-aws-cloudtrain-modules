@@ -73,24 +73,19 @@ variable "tags" {
   default     = null
 }
 
-variable "bucket_regional_domain_name" {
-  type        = string
-  description = "The name of the buckets regional domain name"
-}
-
-variable "s3_bucket_id" {
-  type        = string
-  description = "The id of the s3 bucket to connect the distribution to"
-}
-
-variable "cloudfront_access_identity_path" {
-  type        = string
-  description = "Access identity path used for cloudfront s3 origin config"
+variable "origin" {
+  type = object({
+    domain_name            = string
+    origin_id              = string
+    origin_access_identity = string
+  })
+  description = "The origin configuration e.g. bucket-id and bucket regional domain name"
 }
 
 variable "acm_certificate_arn" {
   description = "The arn of the certificate used for the cloudfront distribution"
   type        = string
+  default     = null
 }
 
 variable "geo_restriction" {
@@ -109,21 +104,7 @@ variable "logging_config" {
     prefix          = string
     include_cookies = bool
   })
-}
-
-variable "target_origin_id" {
-  description = "Value of ID for the origin that you want CloudFront to route requests to when a request matches the path pattern either for a cache behavior or for the default cache behavior"
-  type        = string
-}
-
-variable "origin_request_policy_id" {
-  description = "Unique identifier of the origin request policy that is attached to the behavior."
-  type        = string
-}
-
-variable "cache_policy_id" {
-  description = "Unique identifier of the cache policy that is attached to the cache behavior."
-  type        = string
+  default = null
 }
 
 variable "create_monitoring_subscription" {

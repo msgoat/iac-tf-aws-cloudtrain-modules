@@ -9,6 +9,14 @@ resource "aws_cloudfront_origin_access_control" "cdn" {
   signing_protocol                  = each.value["signing_protocol"]
 }
 
+data "aws_cloudfront_cache_policy" "managed_cachingoptimized" {
+  name = "Managed-CachingOptimized"
+}
+
+data "aws_cloudfront_origin_request_policy" "managed_cors_s3origin" {
+  name = "Managed-CORS-S3Origin"
+}
+
 resource "aws_cloudfront_distribution" "cdn" {
   aliases             = var.aliases
   default_root_object = "index.html"
@@ -19,30 +27,34 @@ resource "aws_cloudfront_distribution" "cdn" {
   web_acl_id          = var.web_acl_id
   tags                = merge(var.tags, local.module_common_tags)
 
-  logging_config {
-    bucket          = var.logging_config.bucket_name
-    prefix          = var.logging_config.prefix
-    include_cookies = var.logging_config.include_cookies
+  dynamic "logging_config" {
+    for_each = var.logging_config != null ? [var.logging_config] : []
+
+    content {
+      bucket          = var.logging_config.bucket_name
+      prefix          = var.logging_config.prefix
+      include_cookies = var.logging_config.include_cookies
+    }
   }
 
   origin {
-    domain_name = var.bucket_regional_domain_name
-    origin_id   = var.s3_bucket_id
+    domain_name = var.origin.domain_name
+    origin_id   = var.origin.origin_id
 
     s3_origin_config {
-      origin_access_identity = var.cloudfront_access_identity_path
+      origin_access_identity = var.origin.origin_access_identity
     }
   }
 
   default_cache_behavior {
     allowed_methods        = ["HEAD", "GET", "OPTIONS"]
     cached_methods         = ["GET", "HEAD"]
-    target_origin_id       = var.target_origin_id
+    target_origin_id       = var.origin.origin_id
     viewer_protocol_policy = "redirect-to-https"
     compress               = true
 
-    origin_request_policy_id = var.origin_request_policy_id
-    cache_policy_id          = var.cache_policy_id
+    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.managed_cors_s3origin.id
+    cache_policy_id          = data.aws_cloudfront_cache_policy.managed_cachingoptimized.id
 
     min_ttl     = 0
     default_ttl = 3600
@@ -74,9 +86,10 @@ resource "aws_cloudfront_distribution" "cdn" {
   }
 
   viewer_certificate {
-    acm_certificate_arn = var.acm_certificate_arn
+    cloudfront_default_certificate = var.acm_certificate_arn != null
+    acm_certificate_arn            = var.acm_certificate_arn != null ? var.acm_certificate_arn : null
 
-    minimum_protocol_version = "TLSv1.2"
+    minimum_protocol_version = var.acm_certificate_arn != null ? "TLSv1.2" : null
     ssl_support_method       = "sni-only"
   }
 
