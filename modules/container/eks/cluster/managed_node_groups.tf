@@ -13,6 +13,7 @@ locals {
     subnet_ids               = var.node_group_subnet_ids
     labels                   = ngt.labels
     taints                   = ngt.taints
+    image_type               = ngt.image_type
   }]
   multi_single_az_node_group_templates = [for i, pair in setproduct(local.single_multi_az_node_group_templates, local.zone_names) : {
     node_group_key           = "${pair[0].node_group_key}-${pair[1]}"
@@ -27,6 +28,7 @@ locals {
     subnet_ids               = [var.node_group_subnet_ids[i % length(local.zone_names)]]
     labels                   = pair[0].labels
     taints                   = pair[0].taints
+    image_type               = pair[0].image_type
   }]
   // build map of node group templates by node group key
   node_group_template_values  = var.node_group_strategy == "MULTI_SINGLE_AZ" ? local.multi_single_az_node_group_templates : local.single_multi_az_node_group_templates
@@ -45,6 +47,7 @@ resource "aws_eks_node_group" "node_groups" {
   disk_size       = each.value.disk_size
   instance_types  = each.value.instance_types
   capacity_type   = each.value.capacity_type
+  ami_type        = each.value.image_type
   tags = merge({
     Name                                = each.key
     "k8s.io/cluster-autoscaler/enabled" = "true"
