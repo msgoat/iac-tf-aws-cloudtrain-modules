@@ -22,22 +22,30 @@ resource "aws_iam_role_policy_attachment" "sqs_role" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaSQSQueueExecutionRole"
 }
 
+locals {
+  // Remove the path
+  filename_with_extension = basename(var.filename)
+
+  // Split the filename on the dot and take the first part, removing the extension
+  filename_without_extension = split(".", local.filename_with_extension)[0]
+}
+
 data "archive_file" "lambda" {
-  count       = var.filename != null ? 1 : 0
+  count       = var.archive && var.filename != null ? 1 : 0
   type        = "zip"
   source_file = var.filename
-  output_path = "lambda_function.zip"
+  output_path = "${local.filename_without_extension}.zip"
 }
 
 resource "aws_lambda_function" "zip" {
   count         = var.filename != null ? 1 : 0
-  filename      = "lambda_function.zip"
+  filename      = var.archive ? "${local.filename_without_extension}.zip" : var.filename
   function_name = var.name
   description   = var.description
   role          = aws_iam_role.role.arn
   handler       = var.handler
 
-  source_code_hash = data.archive_file.lambda[0].output_base64sha256
+  source_code_hash = var.archive ? data.archive_file.lambda[0].output_base64sha256 : filebase64sha256(var.filename)
 
   package_type = "Zip"
 
