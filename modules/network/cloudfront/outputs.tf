@@ -20,5 +20,5 @@ output "cloudfront_distribution_hosted_zone_id" {
 
 output "cloudfront_monitoring_subscription_id" {
   description = " The ID of the CloudFront monitoring subscription, which corresponds to the `distribution_id`."
-  value       = aws_cloudfront_monitoring_subscription.cdn.id
+  value       = try(aws_cloudfront_monitoring_subscription.cdn[0].id, "")
 }
