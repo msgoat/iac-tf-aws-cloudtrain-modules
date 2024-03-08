@@ -87,11 +87,15 @@ variable "handler" {
 
 variable "event_source" {
   type        = string
-  description = "Lambda event source, allowed values are sns, sqs or api"
+  description = "Lambda event source, allowed values are sns, sqs, api, schedule or null"
+
+  default = "none"
 
   validation {
-    condition     = contains(["sqs", "sns", "api"], var.event_source)
-    error_message = "Allowed values for input_parameter are \"sqs\", \"sns\", or \"api\"."
+    condition     = contains([
+      "sqs", "sns", "api", "schedule", "none"
+    ], var.event_source)
+    error_message = "Allowed values for input_parameter are \"sqs\", \"sns\", \"api\", \"schedule\" or \"none\"."
   }
 }
 
@@ -106,10 +110,15 @@ variable "events" {
       method = string # http method
       path   = string # http path, must start with /
     })
+    schedule = object({
+      expression = string # schedule expression, e.g. cron expression
+      expression_timezone = string # timezone for the scheduler to run in
+    })
   })
   default     = {
     sqs = null
     sns = null
     api = null
+    schedule = null
   }
 }
