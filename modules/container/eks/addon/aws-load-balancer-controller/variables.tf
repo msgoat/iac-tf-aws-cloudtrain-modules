@@ -35,36 +35,41 @@ variable "eks_cluster_name" {
 
 variable "kubernetes_namespace_name" {
   description = "Name of the Kubernetes namespace which should host the AWS Load Balancer Controller"
-  type = string
-  default = "aws-system"
+  type        = string
+  default     = "aws-system"
 }
 
 variable "helm_release_name" {
   description = "Name of the Helm release"
-  type = string
-  default = "aws-load-balancer-controller"
+  type        = string
+  default     = "aws-load-balancer-controller"
 }
 
 variable "helm_chart_version" {
   description = "Version of the Helm chart"
-  type = string
-  default = "1.6.2"
+  type        = string
+  default     = "1.6.2"
 }
 
 variable "replica_count" {
   description = "Number of replicas to run"
-  type = number
-  default = 2
+  type        = number
+  default     = 2
 }
 
 variable "cert_manager_enabled" {
   description = "Controls if the AWS Load Controller relies on cert-manager to create the initial certificates"
-  type = bool
-  default = false
+  type        = bool
+  default     = false
 }
 
 variable "ensure_high_availability" {
   description = "Controls if a high availability of this service should be ensured by running at least two pods spread across AZs and nodes"
-  type = bool
-  default = true
+  type        = bool
+  default     = true
+}
+
+variable "prometheus_operator_enabled" {
+  description = "Controls if a ServiceMonitor must be used to expose metric data"
+  type        = bool
 }
