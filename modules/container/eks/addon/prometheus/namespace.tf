@@ -10,4 +10,7 @@ resource kubernetes_namespace_v1 monitoring {
       "app.kubernetes.io/part-of" = var.helm_release_name
     }
   }
+  lifecycle {
+    prevent_destroy = true
+  }
 }
