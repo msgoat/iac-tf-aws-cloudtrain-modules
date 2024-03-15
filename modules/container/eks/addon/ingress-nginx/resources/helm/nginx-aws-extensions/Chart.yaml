@@ -1,0 +1,6 @@
+apiVersion: v2
+name: nginx-aws-extensions
+description: Installs AWS-specific extensions for an existing NGinX ingress controller installation
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
