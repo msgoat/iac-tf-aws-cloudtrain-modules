@@ -38,6 +38,12 @@ variable "hosted_zone_name" {
   type = string
 }
 
+variable host_names {
+  description = "Host names of all hosts whose traffic should be routed to ingress controllers"
+  type = list(string)
+  default = []
+}
+
 variable "letsencrypt_account_name" {
   description = "Lets Encrypt Account name to be used to request certificates"
   type = string
@@ -95,8 +101,26 @@ variable addon_cert_manager_enabled {
   default = true
 }
 
-variable addon_aws_load_balancer_controller_enabled {
-  description = "Controls if addon `aws_load_balancer_controller` should be enabled; default `true`"
+variable addon_ingress_aws_enabled {
+  description = "Controls if addon `ingress_aws` should be enabled; default `true`"
   type = bool
   default = true
+}
+
+variable addon_ingress_nginx_enabled {
+  description = "Controls if addon `ingress_nginx` should be enabled; default `true`"
+  type = bool
+  default = true
+}
+
+variable loadbalancer_id {
+  description = "Unique identifier of an existing load balancer the ingress controllers are supposed to use; required if `addon_ingress_aws_enabled` is `true`"
+  type = string
+  default = ""
+}
+
+variable loadbalancer_target_group_id {
+  description = "Unique identifier of an existing target group the ingress controllers are supposed to use; required if `addon_ingress_aws_enabled` is `true`"
+  type = string
+  default = ""
 }

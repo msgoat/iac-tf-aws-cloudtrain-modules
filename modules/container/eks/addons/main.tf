@@ -71,9 +71,9 @@ module cert_manager {
   prometheus_operator_enabled = var.addon_prometheus_enabled
 }
 
-module aws_load_balancer_controller {
-  count = var.addon_aws_load_balancer_controller_enabled ? 1 : 0
-  source = "../addon/aws-load-balancer-controller"
+module ingress_aws {
+  count = var.addon_ingress_aws_enabled ? 1 : 0
+  source = "../addon/ingress-aws"
   region_name = var.region_name
   solution_fqn = var.solution_fqn
   solution_name = var.solution_name
@@ -81,6 +81,28 @@ module aws_load_balancer_controller {
   common_tags = var.common_tags
   eks_cluster_name = var.eks_cluster_name
   cert_manager_enabled = var.addon_cert_manager_enabled
-  depends_on = [ module.cert_manager ]
   prometheus_operator_enabled = var.addon_prometheus_enabled
+  depends_on = [ module.cert_manager ]
+}
+
+locals {
+  load_balancer_strategy = var.addon_ingress_aws_enabled ? (var.loadbalancer_id != "" ? "SERVICE_VIA_TARGET_GROUP_BINDING" : "INGRESS_VIA_ALB") : "SERVICE_VIA_NODE_PORT"
+}
+
+module ingress_nginx {
+  count = var.addon_ingress_nginx_enabled ? 1 : 0
+  source = "../addon/ingress-nginx"
+  region_name = var.region_name
+  solution_fqn = var.solution_fqn
+  solution_name = var.solution_name
+  solution_stage = var.solution_stage
+  common_tags = var.common_tags
+  eks_cluster_name = var.eks_cluster_name
+  cert_manager_enabled = var.addon_cert_manager_enabled
+  prometheus_operator_enabled = var.addon_prometheus_enabled
+  load_balancer_strategy = local.load_balancer_strategy
+  loadbalancer_id = var.loadbalancer_id
+  loadbalancer_target_group_id = var.loadbalancer_target_group_id
+  host_names = var.host_names
+  depends_on = [ module.cert_manager ]
 }
