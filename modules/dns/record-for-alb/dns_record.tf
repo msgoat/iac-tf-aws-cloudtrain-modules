@@ -1,6 +1,6 @@
 resource aws_route53_record this {
-  name = var.domain_name
-  zone_id = data.aws_route53_zone.owner.id
+  name = var.dns_name
+  zone_id = data.aws_route53_zone.given.id
   type = "A"
   alias {
     evaluate_target_health = true

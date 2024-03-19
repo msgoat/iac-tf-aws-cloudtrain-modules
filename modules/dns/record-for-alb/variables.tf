@@ -23,18 +23,17 @@ variable "common_tags" {
   type        = map(string)
 }
 
-variable "alb_arn" {
-  description = "ARN of an existing AWS application load balancer."
+variable "loadbalancer_id" {
+  description = "Unique identifier of the load balancer the given DNS name should point to."
   type        = string
 }
 
-variable "domain_name" {
-  description = "Domain name of the given load balancer."
+variable "dns_name" {
+  description = "DNS name which should point to the given balancer."
   type        = string
 }
 
-variable "hosted_zone_name" {
-  description = "Name of the hosted zone supposed to own the new DNS record."
-  type        = string
+variable public_hosted_zone_id {
+  description = "Unique identifier of a public DNS zone which should host the DNS records pointing to the given loadbalancer."
+  type = string
 }
-

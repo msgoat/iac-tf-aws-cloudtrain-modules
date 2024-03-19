@@ -6,7 +6,7 @@ module dns_records {
   solution_name = var.solution_name
   solution_stage = var.solution_stage
   common_tags = var.common_tags
-  alb_arn = aws_lb.loadbalancer.arn
-  domain_name = each.value
-  hosted_zone_name = var.domain_name
+  loadbalancer_id = aws_lb.this.arn
+  dns_name = each.value
+  public_hosted_zone_id = var.public_hosted_zone_id
 }
