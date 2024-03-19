@@ -1,6 +1,6 @@
 locals {
   eks_cluster_name           = "eks-${var.region_name}-${var.solution_fqn}-${var.kubernetes_cluster_name}"
-  cluster_security_group_ids = []
+  cluster_security_group_ids = [ aws_security_group.this.id ]
 }
 
 resource "aws_eks_cluster" "control_plane" {
