@@ -1,15 +1,14 @@
 terraform {
   required_providers {
-    aws    = {
+    aws = {
       source  = "hashicorp/aws"
-      version = "~> 4.0"
+      version = "~> 5.0"
     }
     random = {
       version = "~> 3.0"
     }
   }
 }
-
 provider aws {
   region = var.region_name
 }
@@ -33,9 +32,10 @@ module "lambda" {
   solution_stage = var.solution_stage
   event_source   = "sqs"
   events         = {
-    sqs = aws_sqs_queue.example.arn
-    sns = null
-    api = null
+    sqs      = aws_sqs_queue.example.arn
+    sns      = null
+    api      = null
+    schedule = null
   }
-  depends_on     = [aws_sqs_queue.example]
+  depends_on = [aws_sqs_queue.example]
 }

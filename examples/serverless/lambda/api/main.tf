@@ -1,8 +1,8 @@
 terraform {
   required_providers {
-    aws    = {
+    aws = {
       source  = "hashicorp/aws"
-      version = "~> 4.0"
+      version = "~> 5.0"
     }
     random = {
       version = "~> 3.0"
@@ -21,7 +21,7 @@ resource "aws_api_gateway_rest_api" "example" {
       title   = "example"
       version = "1.0"
     }
-    paths   = {
+    paths = {
       "/api/v1/example" = {}
     }
   })
@@ -55,8 +55,9 @@ module "lambda" {
       method = "GET"
       path   = "/api/v1/example"
     }
+    schedule = null
   }
-  depends_on     = [aws_api_gateway_rest_api.example]
+  depends_on = [aws_api_gateway_rest_api.example]
 }
 
 resource "aws_api_gateway_deployment" "example" {
