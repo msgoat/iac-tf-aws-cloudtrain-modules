@@ -1,7 +1,7 @@
 locals {
-  helm_chart_name        = "aws-load-balancer-controller"
-  actual_replica_count   = var.ensure_high_availability && var.replica_count < 2 ? 2 : var.replica_count
-  controller_values      = <<EOT
+  helm_chart_name      = "aws-load-balancer-controller"
+  actual_replica_count = var.ensure_high_availability && var.replica_count < 2 ? 2 : var.replica_count
+  controller_values    = <<EOT
 # Default values for aws-load-balancer-controller.
 replicaCount: ${local.actual_replica_count}
 nameOverride: ""
@@ -124,7 +124,7 @@ livenessProbe:
   initialDelaySeconds: 30
   timeoutSeconds: 10
 
-%{if local.actual_replica_count > 1 ~}
+%{if local.actual_replica_count > 1~}
 podDisruptionBudget:
   maxUnavailable: 1
 %{endif~}

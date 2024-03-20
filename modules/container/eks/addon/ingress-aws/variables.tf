@@ -45,22 +45,22 @@ variable "kubernetes_namespace_owned" {
   default     = true
 }
 
-variable kubernetes_ingress_class_name {
+variable "kubernetes_ingress_class_name" {
   description = "Name of the Kubernetes ingress class to be assigned to this ingress controller"
-  type = string
-  default = "aws"
+  type        = string
+  default     = "aws"
 }
 
-variable kubernetes_default_ingress_class {
+variable "kubernetes_default_ingress_class" {
   description = "Controls if this ingress controller is the default ingress controller on this cluster; default: false"
-  type = bool
-  default = false
+  type        = bool
+  default     = false
 }
 
 variable "helm_release_name" {
   description = "Name of the Helm release"
   type        = string
-  default     = "ingress-aws"
+  default     = "aws-load-balancer-controller"
 }
 
 variable "helm_chart_version" {

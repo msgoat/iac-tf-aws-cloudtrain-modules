@@ -1,6 +1,7 @@
 locals {
   controller_role_name   = "role-${var.eks_cluster_name}-aws-lbc"
   controller_policy_name = "policy-${var.eks_cluster_name}-aws-lbc"
+  service_account_name   = var.helm_release_name == "aws-load-balancer-controller" ? var.helm_release_name : "${var.helm_release_name}-aws-load-balancer-controller"
 }
 
 // Create a dedicated IAM role to be attached to the Kubernetes service account of the AWS Load Balancer Controller
@@ -18,7 +19,7 @@ resource "aws_iam_role" "controller" {
           "Action": "sts:AssumeRoleWithWebIdentity",
           "Condition": {
               "StringEquals": {
-                  "${local.oidc_provider_id}:sub": "system:serviceaccount:${var.kubernetes_namespace_name}:${var.helm_release_name}-aws-load-balancer-controller",
+                  "${local.oidc_provider_id}:sub": "system:serviceaccount:${var.kubernetes_namespace_name}:${local.service_account_name}",
                   "${local.oidc_provider_id}:aud": "sts.amazonaws.com"
               }
           }

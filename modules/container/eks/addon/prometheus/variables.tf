@@ -110,3 +110,9 @@ variable "ensure_high_availability" {
   type = bool
   default = true
 }
+
+variable "node_group_workload_class" {
+  description = "Workload class which refers to a specific node group this addon should be hosted on; default unspecified (i.e. workload is running on default node group)"
+  type        = string
+  default     = ""
+}

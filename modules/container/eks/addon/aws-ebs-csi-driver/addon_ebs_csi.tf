@@ -2,24 +2,24 @@ locals {
   addon_name = "aws-ebs-csi-driver"
 }
 
-data aws_eks_addon_version aws_ebs_csi {
-  addon_name = local.addon_name
+data "aws_eks_addon_version" "aws_ebs_csi" {
+  addon_name         = local.addon_name
   kubernetes_version = data.aws_eks_cluster.given.version
-  most_recent = true
+  most_recent        = true
 }
 
-resource aws_eks_addon aws_ebs_csi {
-  addon_name = local.addon_name
-  cluster_name = data.aws_eks_cluster.given.name
+resource "aws_eks_addon" "aws_ebs_csi" {
+  addon_name               = local.addon_name
+  cluster_name             = data.aws_eks_cluster.given.name
   service_account_role_arn = aws_iam_role.aws_ebs_csi_driver.arn
-  addon_version = data.aws_eks_addon_version.aws_ebs_csi.version
+  addon_version            = data.aws_eks_addon_version.aws_ebs_csi.version
   tags = merge({
     Name = "${data.aws_eks_cluster.given.name}-aws-ebs-csi"
   }, local.module_common_tags)
 }
 
-resource aws_iam_role aws_ebs_csi_driver {
-  name = "role-${data.aws_eks_cluster.given.name}-ebs-csi-driver"
+resource "aws_iam_role" "aws_ebs_csi_driver" {
+  name               = "role-${data.aws_eks_cluster.given.name}-ebs-csi-driver"
   assume_role_policy = <<POLICY
 {
   "Version": "2012-10-17",
@@ -41,13 +41,13 @@ resource aws_iam_role aws_ebs_csi_driver {
 }
 POLICY
   tags = merge({
-    Name =  "role-${data.aws_eks_cluster.given.name}-ebs-csi-driver"
+    Name = "role-${data.aws_eks_cluster.given.name}-ebs-csi-driver"
   }, local.module_common_tags)
 }
 
-resource aws_iam_role_policy aws_ebs_csi_ec2 {
-  name = "policy-${data.aws_eks_cluster.given.name}-ebs-csi-ec2"
-  role = aws_iam_role.aws_ebs_csi_driver.id
+resource "aws_iam_role_policy" "aws_ebs_csi_ec2" {
+  name   = "policy-${data.aws_eks_cluster.given.name}-ebs-csi-ec2"
+  role   = aws_iam_role.aws_ebs_csi_driver.id
   policy = <<POLICY
 {
   "Version": "2012-10-17",
@@ -78,9 +78,9 @@ resource aws_iam_role_policy aws_ebs_csi_ec2 {
 POLICY
 }
 
-resource aws_iam_role_policy aws_ebs_csi_kms {
-  name = "policy-${data.aws_eks_cluster.given.name}-ebs-csi-kms"
-  role = aws_iam_role.aws_ebs_csi_driver.id
+resource "aws_iam_role_policy" "aws_ebs_csi_kms" {
+  name   = "policy-${data.aws_eks_cluster.given.name}-ebs-csi-kms"
+  role   = aws_iam_role.aws_ebs_csi_driver.id
   policy = <<POLICY
 {
   "Version": "2012-10-17",
