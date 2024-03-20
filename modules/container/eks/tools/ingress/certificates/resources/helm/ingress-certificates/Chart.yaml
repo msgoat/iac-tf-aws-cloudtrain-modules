@@ -1,6 +1,0 @@
-apiVersion: v2
-name: ingress-certificates
-description: Adds TLS certificates managed by cert-manager and issues by LetsEncrypt to a given namespace
-type: application
-version: 0.1.0
-appVersion: "0.1.0"
