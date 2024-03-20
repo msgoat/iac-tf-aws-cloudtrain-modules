@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 ### Fixed
 
+## [3.0.0] - 2024-03-20
+### Changed
+- Reworked all EKS related modules
+- Moved ingress controller modules from ingress to addon
+- Moved Elastic Operator from tool to addon
+- Consolidated module APIs
+- Improved documentation
+- Removed obsolete modules
+
 ## [2.4.1] - 2023-12-27
 ### Fixed
 - Module storage/blob: improved handling of S3 bucket policies to avoid issues with multiple policies
