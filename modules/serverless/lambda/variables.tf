@@ -62,6 +62,12 @@ variable "filename" {
   default     = null
 }
 
+variable "archive" {
+  description = "(Optional) Bool indicating if filename should be archived to zip."
+  type        = bool
+  default     = false
+}
+
 variable "image_uri" {
   description = "(Optional) ECR image URI containing the function's deployment package. Exactly one of filename, image_uri or s3_bucket must be specified."
   type        = string
