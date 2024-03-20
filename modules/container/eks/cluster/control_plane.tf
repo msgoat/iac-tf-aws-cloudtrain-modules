@@ -1,6 +1,6 @@
 locals {
   eks_cluster_name           = "eks-${var.region_name}-${var.solution_fqn}-${var.kubernetes_cluster_name}"
-  cluster_security_group_ids = [ aws_security_group.this.id ]
+  cluster_security_group_ids = []
 }
 
 resource "aws_eks_cluster" "control_plane" {
@@ -35,7 +35,7 @@ resource "aws_eks_cluster" "control_plane" {
   ]
 
   access_config {
-    authentication_mode = var.access_config_authentication_mode
+    authentication_mode                         = var.access_config_authentication_mode
     bootstrap_cluster_creator_admin_permissions = true
   }
 

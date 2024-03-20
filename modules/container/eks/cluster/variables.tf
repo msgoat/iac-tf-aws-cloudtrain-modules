@@ -68,23 +68,23 @@ variable "node_group_strategy" {
 variable "node_group_templates" {
   description = "Templates for node groups attached to the AWS EKS cluster, will be replicated for each spanned zone"
   type = list(object({
-    enabled            = optional(bool, true)         # controls if this node group gets actually created
-    managed            = optional(bool, true)         # controls if this node group is managed or unmanaged
-    name               = string       # logical name of this nodegroup
-    kubernetes_version = optional(string, null)       # Kubernetes version of the blue node group; will default to kubernetes_version, if not specified but may differ from kubernetes_version during cluster upgrades
-    min_size           = number       # minimum size of this node group
-    max_size           = number       # maximum size of this node group
+    enabled            = optional(bool, true)      # controls if this node group gets actually created
+    managed            = optional(bool, true)      # controls if this node group is managed or unmanaged
+    name               = string                    # logical name of this nodegroup
+    kubernetes_version = optional(string, null)    # Kubernetes version of the blue node group; will default to kubernetes_version, if not specified but may differ from kubernetes_version during cluster upgrades
+    min_size           = number                    # minimum size of this node group
+    max_size           = number                    # maximum size of this node group
     desired_size       = optional(number, 0)       # desired size of this node group; will default to min_size if set to 0
-    disk_size          = number       # size of attached EBS volume in GB
-    capacity_type      = string       # defines the purchasing option for the EC2 instances in all node groups
-    instance_types     = list(string) # EC2 instance types which should be used for the AWS EKS worker node groups ordered descending by preference
-    labels             = optional(map(string), {})  # Kubernetes labels to be attached to each worker node
+    disk_size          = number                    # size of attached EBS volume in GB
+    capacity_type      = string                    # defines the purchasing option for the EC2 instances in all node groups
+    instance_types     = list(string)              # EC2 instance types which should be used for the AWS EKS worker node groups ordered descending by preference
+    labels             = optional(map(string), {}) # Kubernetes labels to be attached to each worker node
     taints = optional(list(object({
       key    = string
       value  = string
       effect = string
-    })), []) # Kubernetes taints to be attached to each worker node
-    image_type         = optional(string, "AL2_x86_64") # Type of OS images to be used for EC2 instances; possible values are: AL2_x86_64 | AL2_x86_64_GPU | AL2_ARM_64 | CUSTOM | BOTTLEROCKET_ARM_64 | BOTTLEROCKET_x86_64 | BOTTLEROCKET_ARM_64_NVIDIA | BOTTLEROCKET_x86_64_NVIDIA; default is "AL2_x86_64"
+    })), [])                                    # Kubernetes taints to be attached to each worker node
+    image_type = optional(string, "AL2_x86_64") # Type of OS images to be used for EC2 instances; possible values are: AL2_x86_64 | AL2_x86_64_GPU | AL2_ARM_64 | CUSTOM | BOTTLEROCKET_ARM_64 | BOTTLEROCKET_x86_64 | BOTTLEROCKET_ARM_64_NVIDIA | BOTTLEROCKET_x86_64_NVIDIA; default is "AL2_x86_64"
   }))
 }
 

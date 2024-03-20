@@ -1,39 +1,22 @@
-locals {
-  security_group_name = "sec-${local.eks_cluster_name}"
+# Add additional rules to the cluster security group which allow inbound HTTP traffic from within the VPC.
+# Traffic forwarding from a load balancer in front of the cluster using pod IPs won't work, otherwise.
+
+resource "aws_security_group_rule" "allow_inbound_http_from_vpc" {
+  description       = "Allow inbound HTTP traffic from VPC"
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  cidr_blocks       = [data.aws_vpc.given.cidr_block]
+  security_group_id = aws_eks_cluster.control_plane.vpc_config[0].cluster_security_group_id
 }
 
-resource aws_security_group this {
-  name = local.security_group_name
-  description = "Allow inbound HTTP and HTTPS traffic into the cluster from within this VPC (through a load balancer)"
-  vpc_id = data.aws_vpc.given.id
-  tags = merge({ Name = local.security_group_name }, local.module_common_tags)
+resource "aws_security_group_rule" "allow_inbound_https_from_vpc" {
+  description       = "Allow inbound HTTPS traffic from VPC"
+  type              = "ingress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  cidr_blocks       = [data.aws_vpc.given.cidr_block]
+  security_group_id = aws_eks_cluster.control_plane.vpc_config[0].cluster_security_group_id
 }
-
-resource "aws_security_group_rule" "allow_inbound_http" {
-  type = "ingress"
-  from_port = 80
-  to_port = 80
-  protocol = "tcp"
-  cidr_blocks = [ data.aws_vpc.given.cidr_block ]
-  security_group_id = aws_security_group.this.id
-}
-
-resource "aws_security_group_rule" "allow_inbound_https" {
-  type = "ingress"
-  from_port = 443
-  to_port = 443
-  protocol = "tcp"
-  cidr_blocks = [ data.aws_vpc.given.cidr_block ]
-  security_group_id = aws_security_group.this.id
-}
-
-resource "aws_security_group_rule" "allow_outbound_any" {
-  type = "egress"
-  from_port = 0
-  to_port = 65535
-  protocol = "tcp"
-  cidr_blocks = [
-    "0.0.0.0/0"]
-  security_group_id = aws_security_group.this.id
-}
-
