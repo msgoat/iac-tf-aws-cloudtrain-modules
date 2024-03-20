@@ -1,4 +1,9 @@
-output aws_auth_config_map {
-  description = "Contents of the aws-auth ConfigMap"
-  value = module.aws_auth.aws_auth_config_map
+output "kubernetes_ingress_class_name" {
+  description = "Kubernetes ingress class name of the default ingress controller"
+  value       = local.actual_ingress_class_name
+}
+
+output "kubernetes_ingress_controller_type" {
+  description = "Kubernetes ingress controller type of the default ingress controller"
+  value       = local.actual_ingress_controller_type
 }
