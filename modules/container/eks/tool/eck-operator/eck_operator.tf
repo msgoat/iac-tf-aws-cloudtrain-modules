@@ -66,13 +66,6 @@ topologySpreadConstraints:
     topologyKey: topology.kubernetes.io/zone
     maxSkew: 1
     whenUnsatisfiable: ScheduleAnyway
-  - labelSelector:
-      matchLabels:
-        app.kubernetes.io/name: '{{ include "eck-operator" . }}'
-        app.kubernetes.io/instance: '{{ .Release.Name }}'
-    topologyKey: kubernetes.io/hostname
-    maxSkew: 1
-    whenUnsatisfiable: ScheduleAnyway
 %{ else ~}
   topologySpreadConstraints: []
 %{ endif ~}
