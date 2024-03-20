@@ -137,6 +137,6 @@ resource helm_release elasticsearch {
   dependency_update = true
   atomic = false
   cleanup_on_fail = false
-  namespace = kubernetes_namespace.namespace.metadata[0].name
+  namespace = var.kubernetes_namespace_owned ? kubernetes_namespace.this[0].metadata[0].name : var.kubernetes_namespace_name
   values = [ local.elasticsearch_values ]
 }

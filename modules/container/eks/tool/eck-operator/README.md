@@ -2,6 +2,8 @@
 
 Provisions the [Elastic Cloud Kubernetes Operator](https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-overview.html) on the given EKS cluster.
 
+> __Deprecated__: Use [container/addon/eck-operator](../../addon/eck-operator/README.md) instead!!!
+
 ## Input Variables
 
 see: [variables.tf](variables.tf)

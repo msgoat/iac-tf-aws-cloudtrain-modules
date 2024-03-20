@@ -4,6 +4,8 @@ Terraform module to install the [AWS Load Balancer Controller](https://docs.aws.
 
 By default, the AWS Load Balancer Controller is installed in Kubernetes namespace `aws-system` running with `2` replicas.
 
+> __Deprecated__: Please use [ingress-aws](../ingress-aws/README.md) instead!!!
+
 ## Prerequisites
 
 * Since the AWS Load Balancer Controller relies on [IAM roles for Kubernetes service accounts](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html), 

@@ -20,6 +20,6 @@ resource "helm_release" "letsencrypt" {
   cleanup_on_fail   = true
   namespace         = var.kubernetes_namespace_owned ? kubernetes_namespace_v1.cert_manager[0].metadata[0].name : var.kubernetes_namespace_name
   create_namespace  = false
-  values            = [ local.letencrypt_values ]
-  depends_on = [helm_release.cert_manager]
+  values            = [local.letencrypt_values]
+  depends_on        = [helm_release.cert_manager]
 }

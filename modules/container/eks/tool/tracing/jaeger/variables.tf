@@ -39,6 +39,28 @@ variable kubernetes_namespace_name {
   default = "tracing"
 }
 
+variable "kubernetes_namespace_owned" {
+  description = "Controls if the given Kubernetes namespace will be created and destroyed by this module; default: true"
+  type = bool
+  default = true
+}
+
+variable kubernetes_ingress_class_name {
+  description = "Name of the ingress class to be used to expose any tool UI included in this stack"
+  type = string
+}
+
+variable kubernetes_ingress_controller_type {
+  description = "Type of the ingress controller to be used to expose any tool UI in this stack; possible values are: `NGINX` or `TRAEFIK`"
+  type = string
+}
+
+variable kubernetes_storage_class_name {
+  description = "Name of the storage class to be used for all persistence volume claims"
+  type = string
+  default = "ebs-csi-gp3"
+}
+
 variable helm_release_name {
   description = "Name of the Helm release which represents a deployment of this stack"
   type = string
@@ -71,18 +93,6 @@ variable node_group_workload_class {
   description = "Class of the AKS node group this tool stack should be hosted on"
   type = string
   default = ""
-}
-
-variable ingress_class_name {
-  description = "Ingress class name"
-  type = string
-  default = "nginx"
-}
-
-variable ingress_controller_type {
-  description = "Ingress controller type; possible values are `NGINX` or `TRAEFIK`"
-  type = string
-  default = "NGINX"
 }
 
 variable elasticsearch_strategy {

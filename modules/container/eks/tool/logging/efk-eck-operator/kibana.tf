@@ -45,7 +45,7 @@ spec:
     # If not specified, then the namespace of the Kibana resource
     # will be assumed.
     #
-    namespace: ${kubernetes_namespace.namespace.metadata[0].name}
+    namespace: ${kubernetes_namespace.this[0].metadata[0].name}
 
   # Switch off TLS since TSL termination is done by Application Gateway
   http:
@@ -108,14 +108,14 @@ spec:
 # --- additional stuff not included in the upstream chart
 ingress:
   enabled: true
-  className: ${var.ingress_class_name}
-%{ if var.ingress_controller_type == "NGINX" && var.kibana_path != "/" ~}
+  className: ${var.kubernetes_ingress_class_name}
+%{ if var.kubernetes_ingress_controller_type == "NGINX" && var.kibana_path != "/" ~}
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$2
 %{ endif ~}
   pathType: Prefix
   host: "${var.kibana_host_name}"
-%{ if var.ingress_controller_type == "NGINX" && var.kibana_path != "/" ~}
+%{ if var.kubernetes_ingress_controller_type == "NGINX" && var.kibana_path != "/" ~}
   path: "${var.kibana_path}(/|$)(.*)"
 %{ else ~}
   path: "${var.kibana_path}"
@@ -129,7 +129,7 @@ resource helm_release kibana {
   dependency_update = true
   atomic = false
   cleanup_on_fail = false
-  namespace = kubernetes_namespace.namespace.metadata[0].name
+  namespace = var.kubernetes_namespace_owned ? kubernetes_namespace.this[0].metadata[0].name : var.kubernetes_namespace_name
   values = [ local.kibana_values ]
   depends_on = [ helm_release.elasticsearch ]
 }

@@ -1,4 +1,5 @@
 locals {
+  actual_replica_count = var.ensure_high_availability && var.replica_count < 2 ? 2 : var.replica_count
   prometheus_stack_values = <<EOT
 # Custom values for kube-prometheus-stack.
 # The default values can be found at: https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/README.md
@@ -58,7 +59,7 @@ alertmanager:
   serviceAccount:
     create: true
   podDisruptionBudget:
-    enabled: ${var.replica_count > 1 ? true : false}
+    enabled: ${local.actual_replica_count > 1 ? true : false}
     minAvailable: 1
   stringConfig: ""
   tplConfig: false
@@ -107,8 +108,8 @@ alertmanager:
     alertmanagerConfigMatcherStrategy: {}
     logFormat: json
     logLevel: info
-    replicas: ${var.replica_count}
-    retention: 120h
+    replicas: ${local.actual_replica_count}
+    retention: ${var.retention_days}d
     storage:
       volumeClaimTemplate:
         spec:
@@ -116,7 +117,7 @@ alertmanager:
           accessModes: ["ReadWriteOnce"]
           resources:
             requests:
-              storage: 50Gi
+              storage: ${var.alert_manager_storage_size}Gi
     externalUrl: "https://${var.alert_manager_host_name}${var.alert_manager_path}"
     routePrefix: /
     paused: false
@@ -124,9 +125,36 @@ alertmanager:
     resources: {} # TODO: add resource constraints
     podAntiAffinity: ""
     podAntiAffinityTopologyKey: kubernetes.io/hostname
-    affinity: {}
-    tolerations: []
-    topologySpreadConstraints: []
+%{ if var.node_group_workload_class != "" ~}
+    # It's OK to be deployed to the tools node group, too
+    tolerations:
+      - key: "group.msg.cloud.kubernetes/workload"
+        operator: "Equal"
+        value: ${var.node_group_workload_class}
+        effect: "NoSchedule"
+%{ endif ~}
+%{ if var.node_group_workload_class != "" ~}
+    affinity:
+      # Encourages deployment to the tools node group
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: "group.msg.cloud.kubernetes/workload"
+                  operator: In
+                  values:
+                    - ${var.node_group_workload_class}
+%{ endif ~}
+%{ if var.ensure_high_availability ~}
+      topologySpreadConstraints:
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: '{{ include "kube-prometheus-stack.name" . }}-operator'
+              app.kubernetes.io/instance: '{{ .Release.Name }}'
+          topologyKey: topology.kubernetes.io/zone
+          maxSkew: 1
+          whenUnsatisfiable: ScheduleAnyway
+%{ endif ~}
     securityContext:
       runAsGroup: 2000
       runAsNonRoot: true
@@ -241,7 +269,7 @@ grafana:
     enabled: true
     type: statefulset
     storageClassName: ${var.kubernetes_storage_class_name}
-    size: 10Gi
+    size: ${var.grafana_storage_size}Gi
   # Additional Grafana configuration to allow proper serving with paths
   grafana.ini:
     analytics:
@@ -685,7 +713,7 @@ prometheus:
     sessionAffinity: ""
   servicePerReplica:
     enabled: false
-%{ if var.replica_count > 1 ~}
+%{ if local.actual_replica_count > 1 ~}
   podDisruptionBudget:
     enabled: true
     minAvailable:
@@ -738,7 +766,26 @@ prometheus:
     exemplars: ""
     # maxSize: 100000
     enableFeatures: []
-    tolerations: []
+%{ if var.node_group_workload_class != "" ~}
+    # It's OK to be deployed to the tools node group, too
+    tolerations:
+      - key: "group.msg.cloud.kubernetes/workload"
+        operator: "Equal"
+        value: ${var.node_group_workload_class}
+        effect: "NoSchedule"
+%{ endif ~}
+%{ if var.node_group_workload_class != "" ~}
+    affinity:
+      # Encourages deployment to the tools node group
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: "group.msg.cloud.kubernetes/workload"
+                  operator: In
+                  values:
+                    - ${var.node_group_workload_class}
+%{ endif ~}
     topologySpreadConstraints: []
     alertingEndpoints: []
     externalLabels: {}
@@ -770,7 +817,7 @@ prometheus:
       outOfOrderTimeWindow: 0s
     walCompression: true
     paused: false
-    replicas: ${var.replica_count}
+    replicas: ${local.actual_replica_count}
     shards: 1
     logLevel: info
     logFormat: json
@@ -778,7 +825,6 @@ prometheus:
     podMetadata: {}
     podAntiAffinity: "soft"
     podAntiAffinityTopologyKey: kubernetes.io/hostname
-    affinity: {}
     remoteRead: []
     additionalRemoteRead: []
     remoteWrite: []
@@ -792,7 +838,7 @@ prometheus:
           accessModes: ["ReadWriteOnce"]
           resources:
             requests:
-              storage: 50Gi
+              storage: ${var.prometheus_storage_size}Gi
         selector: {}
     volumes: []
     volumeMounts: []
@@ -848,9 +894,9 @@ resource helm_release kube_prometheus_stack {
   dependency_update = true
   atomic = true
   cleanup_on_fail = true
-  create_namespace = true
-  namespace = var.kubernetes_namespace_name
+  create_namespace = false
+  namespace = var.kubernetes_namespace_owned ? kubernetes_namespace_v1.this[0].metadata[0].name : var.kubernetes_namespace_name
   repository = "https://prometheus-community.github.io/helm-charts"
   values = [ local.prometheus_stack_values ]
-  depends_on = [ kubernetes_namespace_v1.monitoring, kubernetes_secret.grafana_admin ]
+  depends_on = [ kubernetes_namespace_v1.this, kubernetes_secret.grafana_admin ]
 }

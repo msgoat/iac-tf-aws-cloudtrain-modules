@@ -1,7 +1,7 @@
 locals {
   actual_replica_count = var.ensure_high_availability && var.replica_count < 2 ? 2 : var.replica_count
-  helm_chart_name = "cert-manager"
-  cert_manager_values = <<EOT
+  helm_chart_name      = "cert-manager"
+  cert_manager_values  = <<EOT
 # Default values for cert-manager.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
@@ -64,14 +64,12 @@ strategy: {}
   #   maxSurge: 0
   #   maxUnavailable: 1
 
+%{ if local.actual_replica_count > 1 ~}
 podDisruptionBudget:
-  enabled: false
-
-  minAvailable: 1
-  # maxUnavailable: 1
-
-  # minAvailable and maxUnavailable can either be set to an integer (e.g. 1)
-  # or a percentage value (e.g. 25%)
+  enabled: true
+  minAvailable:
+  maxUnavailable: 1
+%{ endif ~}
 
 # Comma separated list of feature gates that should be enabled on the
 # controller pod & webhook pod.
@@ -187,9 +185,9 @@ ingressShim: {}
   # defaultIssuerGroup: ""
 
 prometheus:
-  enabled: true
+  enabled: ${var.prometheus_operator_enabled}
   servicemonitor:
-    enabled: false
+    enabled: ${var.prometheus_operator_enabled}
     prometheusInstance: default
     targetPort: 9402
     path: /metrics
@@ -198,11 +196,6 @@ prometheus:
     labels: {}
     annotations: {}
     honorLabels: false
-
-# Use these variables to configure the HTTP_PROXY environment variables
-# http_proxy: "http://proxy:8080"
-# https_proxy: "https://proxy:8080"
-# no_proxy: 127.0.0.1,localhost
 
 # expects input structure as per specification https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#affinity-v1-core
 # for example:
@@ -226,7 +219,7 @@ affinity: {}
 #     effect: NoSchedule
 tolerations: []
 
-%{ if var.ensure_high_availability ~}
+%{if var.ensure_high_availability~}
 topologySpreadConstraints:
 - labelSelector:
     matchLabels:
@@ -244,9 +237,9 @@ topologySpreadConstraints:
   topologyKey: kubernetes.io/hostname
   maxSkew: 1
   whenUnsatisfiable: ScheduleAnyway
-%{ else ~}
+%{else~}
 topologySpreadConstraints: []
-%{ endif ~}
+%{endif~}
 
 webhook:
   replicaCount: 1
@@ -507,7 +500,7 @@ cainjector:
 
   tolerations: []
 
-%{ if var.ensure_high_availability ~}
+%{if var.ensure_high_availability~}
   topologySpreadConstraints:
   - labelSelector:
       matchLabels:
@@ -525,9 +518,9 @@ cainjector:
     topologyKey: kubernetes.io/hostname
     maxSkew: 1
     whenUnsatisfiable: ScheduleAnyway
-%{ else ~}
+%{else~}
   topologySpreadConstraints: []
-%{ endif ~}
+%{endif~}
 
   # Optional additional labels to add to the CA Injector Pods
   podLabels: {}
@@ -659,6 +652,6 @@ resource "helm_release" "cert_manager" {
   cleanup_on_fail   = true
   namespace         = var.kubernetes_namespace_owned ? kubernetes_namespace_v1.cert_manager[0].metadata[0].name : var.kubernetes_namespace_name
   create_namespace  = false
-  values            = [ local.cert_manager_values ]
-  depends_on        = [ aws_iam_role_policy.cert_manager ]
+  values            = [local.cert_manager_values]
+  depends_on        = [aws_iam_role_policy.cert_manager]
 }

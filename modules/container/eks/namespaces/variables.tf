@@ -3,41 +3,41 @@
 # Defines all input variable for this demo.
 # ---------------------------------------------------------------------------
 
-variable region_name {
+variable "region_name" {
   description = "The AWS region to deploy into (e.g. eu-central-1)."
-  type = string
+  type        = string
 }
 
-variable solution_name {
+variable "solution_name" {
   description = "The name of the AWS solution that owns all AWS resources."
-  type = string
+  type        = string
 }
 
-variable solution_stage {
+variable "solution_stage" {
   description = "The name of the current AWS solution stage."
-  type = string
+  type        = string
 }
 
-variable solution_fqn {
+variable "solution_fqn" {
   description = "The fully qualified name of the current AWS solution."
-  type = string
+  type        = string
 }
 
-variable common_tags {
+variable "common_tags" {
   description = "Common tags to be attached to all AWS resources"
-  type = map(string)
+  type        = map(string)
 }
 
-variable eks_cluster_name {
+variable "eks_cluster_name" {
   description = "Fully qualified name of the AWS EKS cluster to deploy to"
-  type = string
+  type        = string
 }
 
-variable kubernetes_namespace_templates {
+variable "kubernetes_namespace_templates" {
   description = "Templates for the Kubernetes namespaces to create"
   type = list(object({
-    name = string
-    labels = map(string)
+    name                    = string
+    labels                  = map(string)
     network_policy_enforced = bool
   }))
 }

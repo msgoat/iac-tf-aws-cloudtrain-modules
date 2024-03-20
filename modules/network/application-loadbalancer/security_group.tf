@@ -8,10 +8,10 @@ locals {
   security_group_name = "sec-${local.alb_name}"
 }
 
-resource aws_security_group loadbalancer {
+resource aws_security_group this {
   name = local.security_group_name
-  description = "Allow TLS inbound traffic"
-  vpc_id = data.aws_vpc.vpc.id
+  description = "Allow inbound HTTP and HTTPS traffic from the internet"
+  vpc_id = data.aws_vpc.given.id
   tags = merge({ Name = local.security_group_name }, local.module_common_tags)
 }
 
@@ -21,7 +21,7 @@ resource "aws_security_group_rule" "allow_inbound_http" {
   to_port = 80
   protocol = "tcp"
   cidr_blocks = var.inbound_traffic_cidrs
-  security_group_id = aws_security_group.loadbalancer.id
+  security_group_id = aws_security_group.this.id
 }
 
 resource "aws_security_group_rule" "allow_inbound_https" {
@@ -30,7 +30,7 @@ resource "aws_security_group_rule" "allow_inbound_https" {
   to_port = 443
   protocol = "tcp"
   cidr_blocks = var.inbound_traffic_cidrs
-  security_group_id = aws_security_group.loadbalancer.id
+  security_group_id = aws_security_group.this.id
 }
 
 resource "aws_security_group_rule" "allow_outbound_any" {
@@ -40,5 +40,5 @@ resource "aws_security_group_rule" "allow_outbound_any" {
   protocol = "tcp"
   cidr_blocks = [
     "0.0.0.0/0"]
-  security_group_id = aws_security_group.loadbalancer.id
+  security_group_id = aws_security_group.this.id
 }

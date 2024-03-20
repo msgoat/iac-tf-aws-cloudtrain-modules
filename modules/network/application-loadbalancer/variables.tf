@@ -38,48 +38,15 @@ variable loadbalancer_subnet_ids {
   type = list(string)
 }
 
-variable target_group_subnet_ids {
-  description = "Unique identifiers of all subnets inside the VPC supposed to host target groups"
-  type = list(string)
-}
-
-variable domain_name {
-  description = "DNS domain names of hosts whose traffic should be routed through the Application Load Balancer"
+variable public_hosted_zone_id {
+  description = "Unique identifier of a public DNS zone which should host all DNS records pointing to this loadbalancer"
   type = string
 }
 
-variable target_group {
-  description = "Configuration of the default target group"
-  type = object({
-    name = string
-    port = number
-    protocol = string
-  })
-  default = {
-    name = "default"
-    port = 32000
-    protocol = "HTTP"
-  }
-}
-
-variable target_group_health_check {
-  description = "Configuration of the default target group health check"
-  type = object({
-    path = string
-    port = number
-    protocol = string
-    healthy_threshold = number
-    unhealthy_threshold = number
-    timeout = number
-  })
-  default = {
-    path = "/health"
-    port = 32000
-    protocol = "HTTP"
-    healthy_threshold = 5
-    unhealthy_threshold = 5
-    timeout = 2
-  }
+variable host_names {
+  description = "Host names of all hosts whose traffic should be routed through this load balancer"
+  type = list(string)
+  default = []
 }
 
 variable inbound_traffic_cidrs {
@@ -99,8 +66,8 @@ variable cm_certificate_arn {
   type = string
 }
 
-variable loadbalancer_security_group_ids {
-  description = "Unique identifiers of security groups which allow an external loadbalancer to talk to the ingress controller via node ports"
+variable target_security_group_ids {
+  description = "Unique identifiers of security groups which allow this loadbalancer to talk to the target group resources"
   type = list(string)
   default = []
 }

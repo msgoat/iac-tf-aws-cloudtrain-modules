@@ -373,7 +373,7 @@ resource helm_release fluent_bit {
   dependency_update = true
   atomic = true
   cleanup_on_fail = true
-  namespace = kubernetes_namespace.namespace.metadata[0].name
+  namespace = var.kubernetes_namespace_owned ? kubernetes_namespace.this[0].metadata[0].name : var.kubernetes_namespace_name
   repository = "https://fluent.github.io/helm-charts"
   values = [ local.fluent_bit_values ]
   depends_on = [ helm_release.elasticsearch ]

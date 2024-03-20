@@ -1,4 +1,4 @@
-data aws_vpc vpc {
-  id = data.aws_subnet.loadbalancer_subnets[0].vpc_id
+data aws_vpc given {
+  id = data.aws_subnet.given[0].vpc_id
 }
 

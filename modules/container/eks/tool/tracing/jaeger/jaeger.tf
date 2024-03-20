@@ -268,7 +268,7 @@ query:
     # nodePort: 32500
   ingress:
     enabled: true
-    ingressClassName: ${var.ingress_class_name}
+    ingressClassName: ${var.kubernetes_ingress_class_name}
     annotations: {}
     labels: {}
     # Used to create an Ingress record.
@@ -485,7 +485,7 @@ resource helm_release jaeger {
   dependency_update = true
   atomic = true
   cleanup_on_fail = true
-  namespace = kubernetes_namespace.namespace.metadata[0].name
+  namespace = var.kubernetes_namespace_owned ? kubernetes_namespace.this[0].metadata[0].name : var.kubernetes_namespace_name
   repository = "https://jaegertracing.github.io/helm-charts"
   values = [ local.helm_values ]
 }

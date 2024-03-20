@@ -1,8 +1,8 @@
 locals {
-  helm_chart_name = "aws-load-balancer-controller"
-  controller_replicas = var.replica_count
+  helm_chart_name        = "aws-load-balancer-controller"
+  controller_replicas    = var.ensure_high_availability && var.replica_count < 2 ? 2 : var.replica_count
   controller_pdb_enabled = local.controller_replicas > 1 ? true : false
-  controller_values = <<EOT
+  controller_values      = <<EOT
 # Default values for aws-load-balancer-controller.
 replicaCount: ${local.controller_replicas}
 nameOverride: ""
@@ -47,7 +47,7 @@ affinity: {}
 
 configureDefaultAffinity: true
 
-%{ if var.ensure_high_availability ~}
+%{if var.ensure_high_availability~}
 topologySpreadConstraints:
 - labelSelector:
     matchLabels:
@@ -63,9 +63,9 @@ topologySpreadConstraints:
   topologyKey: kubernetes.io/hostname
   maxSkew: 1
   whenUnsatisfiable: ScheduleAnyway
-%{ else ~}
+%{else~}
 topologySpreadConstraints: []
-%{ endif ~}
+%{endif~}
 
 updateStrategy: {}
 
@@ -125,10 +125,10 @@ livenessProbe:
   initialDelaySeconds: 30
   timeoutSeconds: 10
 
-%{ if local.controller_pdb_enabled ~}
+%{if local.controller_pdb_enabled~}
 podDisruptionBudget:
   maxUnavailable: 1
-%{ endif ~}
+%{endif~}
 
 externalManagedTags: []
 
@@ -166,6 +166,6 @@ resource "helm_release" "controller" {
   cleanup_on_fail   = true
   namespace         = var.kubernetes_namespace_name
   create_namespace  = true
-  values            = [ local.controller_values ]
-  depends_on        = [ aws_iam_role_policy_attachment.controller ]
+  values            = [local.controller_values]
+  depends_on        = [aws_iam_role_policy_attachment.controller]
 }

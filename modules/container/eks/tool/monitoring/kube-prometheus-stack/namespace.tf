@@ -1,4 +1,5 @@
-resource kubernetes_namespace_v1 monitoring {
+resource kubernetes_namespace_v1 this {
+  count = var.kubernetes_namespace_owned ? 1 : 0
   metadata {
     name = var.kubernetes_namespace_name
     labels = {

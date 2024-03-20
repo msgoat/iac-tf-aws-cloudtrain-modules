@@ -23,7 +23,3 @@ data aws_region current {
 data aws_availability_zones available_zones {
   state = "available"
 }
-
-output available_zones {
-  value = data.aws_availability_zones.available_zones.names
-}

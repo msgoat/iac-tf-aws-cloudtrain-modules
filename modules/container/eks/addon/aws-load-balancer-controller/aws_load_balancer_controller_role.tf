@@ -1,11 +1,11 @@
 locals {
-  controller_role_name = "role-${var.eks_cluster_name}-aws-lbc"
+  controller_role_name   = "role-${var.eks_cluster_name}-aws-lbc"
   controller_policy_name = "policy-${var.eks_cluster_name}-aws-lbc"
 }
 
 // Create a dedicated IAM role to be attached to the Kubernetes service account of the AWS Load Balancer Controller
-resource aws_iam_role controller {
-  name = local.controller_role_name
+resource "aws_iam_role" "controller" {
+  name               = local.controller_role_name
   assume_role_policy = <<POLICY
 {
   "Version": "2012-10-17",
@@ -31,13 +31,13 @@ POLICY
   }, local.module_common_tags)
 }
 
-resource aws_iam_role_policy_attachment controller {
-  role = aws_iam_role.controller.name
+resource "aws_iam_role_policy_attachment" "controller" {
+  role       = aws_iam_role.controller.name
   policy_arn = aws_iam_policy.controller.arn
 }
 
-resource aws_iam_policy controller {
-  name = local.controller_policy_name
+resource "aws_iam_policy" "controller" {
+  name   = local.controller_policy_name
   policy = <<POLICY
 {
     "Version": "2012-10-17",
@@ -281,5 +281,5 @@ resource aws_iam_policy controller {
     ]
 }
 POLICY
-  tags = merge({ Name = local.controller_policy_name }, local.module_common_tags)
+  tags   = merge({ Name = local.controller_policy_name }, local.module_common_tags)
 }
