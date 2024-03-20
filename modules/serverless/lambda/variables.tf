@@ -62,6 +62,12 @@ variable "filename" {
   default     = null
 }
 
+variable "archive" {
+  description = "(Optional) Bool indicating if filename should be archived to zip."
+  type        = bool
+  default     = false
+}
+
 variable "image_uri" {
   description = "(Optional) ECR image URI containing the function's deployment package. Exactly one of filename, image_uri or s3_bucket must be specified."
   type        = string
@@ -87,11 +93,15 @@ variable "handler" {
 
 variable "event_source" {
   type        = string
-  description = "Lambda event source, allowed values are sns, sqs or api"
+  description = "Lambda event source, allowed values are sns, sqs, api or null"
+
+  default = "none"
 
   validation {
-    condition     = contains(["sqs", "sns", "api"], var.event_source)
-    error_message = "Allowed values for input_parameter are \"sqs\", \"sns\", or \"api\"."
+    condition     = contains([
+      "sqs", "sns", "api", "none"
+    ], var.event_source)
+    error_message = "Allowed values for input_parameter are \"sqs\", \"sns\", \"api\" or \"none\"."
   }
 }
 
