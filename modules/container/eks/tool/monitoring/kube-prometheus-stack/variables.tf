@@ -39,32 +39,44 @@ variable kubernetes_namespace_name {
   default = "monitoring"
 }
 
+variable "kubernetes_namespace_owned" {
+  description = "Controls if the given Kubernetes namespace will be created and destroyed by this module; default: true"
+  type = bool
+  default = true
+}
+
+variable kubernetes_ingress_class_name {
+  description = "Name of the ingress class to be used to expose Grafana UI and Prometheus UI"
+  type = string
+}
+
+variable kubernetes_ingress_controller_type {
+  description = "Type of the ingress controller to be used to expose Grafana UI and Prometheus UI; possible values are: `NGINX` or `TRAEFIK`"
+  type = string
+}
+
+variable kubernetes_storage_class_name {
+  description = "Name of the storage class to be used for all persistence volume claims"
+  type = string
+  default = "ebs-csi-gp3"
+}
+
 variable helm_release_name {
   description = "Name of the Helm release which represents a deployment of this stack"
   type = string
-  default = "kube-prometheus-stack"
+  default = "monitoring"
 }
 
 variable helm_chart_version {
   description = "Version of the upstream Helm chart"
   type = string
-  default = "52.1.0"
+  default = "57.0.2"
 }
 
-variable grafana_ui_enabled {
-  description = "Controls if the Grafana UI should be exposed; default: true"
-  type = bool
-  default = true
-}
-
-variable grafana_host_name {
-  description = "Fully qualified host name to be used to route traffic to the Grafana UI"
-  type = string
-}
-
-variable grafana_path {
-  description = "Path to be used to route traffic to the Grafana UI"
-  type = string
+variable prometheus_storage_size {
+  description = "Size of Prometheus Server's persistent volume claim in GB; default `8`"
+  type = number
+  default = 8
 }
 
 variable prometheus_ui_enabled {
@@ -91,6 +103,12 @@ variable alert_manager_enabled {
   default = false
 }
 
+variable alert_manager_storage_size {
+  description = "Size of Prometheus Alert Manager's persistent volume claim in GB; default `8`"
+  type = number
+  default = 8
+}
+
 variable alert_manager_ui_enabled {
   description = "Controls if the Prometheus Alert Manager UI should be exposed; default: false"
   type = bool
@@ -109,22 +127,26 @@ variable alert_manager_path {
   default = ""
 }
 
-variable kubernetes_ingress_class_name {
-  description = "Name of the ingress class to be used to expose Grafana UI and Prometheus UI"
-  type = string
-  default = "nginx"
+variable grafana_ui_enabled {
+  description = "Controls if the Grafana UI should be exposed; default: true"
+  type = bool
+  default = true
 }
 
-variable kubernetes_ingress_controller_type {
-  description = "Type of the ingress controller to be used to expose Grafana UI and Prometheus UI; possible values are: `NGINX` or `TRAEFIK`"
-  type = string
-  default = "NGINX"
+variable grafana_storage_size {
+  description = "Size of Grafana's persistent volume claim in GB; default `8`"
+  type = number
+  default = 8
 }
 
-variable kubernetes_storage_class_name {
-  description = "Name of the storage class to be used for all persistence volume claims"
+variable grafana_host_name {
+  description = "Fully qualified host name to be used to route traffic to the Grafana UI"
   type = string
-  default = "ebs-csi-gp3"
+}
+
+variable grafana_path {
+  description = "Path to be used to route traffic to the Grafana UI"
+  type = string
 }
 
 variable replica_count {
@@ -155,4 +177,10 @@ variable "ensure_high_availability" {
   description = "Controls if a high availability of this service should be ensured by running at least two pods spread across AZs and nodes"
   type = bool
   default = true
+}
+
+variable "node_group_workload_class" {
+  description = "Workload class which refers to a specific node group this addon should be hosted on; default unspecified (i.e. workload is running on default node group)"
+  type        = string
+  default     = ""
 }
