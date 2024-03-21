@@ -5,7 +5,7 @@ locals {
   elasticsearch_service_port = 9200
   elasticsearch_credentials_k8s_secret_name = "${local.elasticsearch_release_name}-es-elastic-user"
   elasticsearch_certificates_k8s_secret_name = "${local.elasticsearch_release_name}-es-http-certs-public"
-  elasticsearch_replica_count = var.ensure_high_availability ? 3 : 1
+  elasticsearch_replica_count = var.ensure_high_availability && var.elasticsearch_cluster_size < 3 ? 3 : var.elasticsearch_cluster_size
   # render helm chart values since direct passing of values does not work in all cases
   elasticsearch_values = <<EOT
 fullnameOverride: "${local.elasticsearch_release_name}"

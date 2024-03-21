@@ -138,6 +138,12 @@ variable "elasticsearch_storage_size" {
   default = 8
 }
 
+variable "elasticsearch_cluster_size" {
+  description = "Number of nodes in the Elasticsearch cluster; may be overridden if ensure_high_availability is true"
+  type = number
+  default = 1
+}
+
 variable "kibana_version" {
   description = "Version of Kibana search to deploy; matches the Elasticsearch version by default"
   type = string
