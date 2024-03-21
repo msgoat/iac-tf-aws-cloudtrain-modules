@@ -70,7 +70,7 @@ variable helm_release_name {
 variable helm_chart_version {
   description = "Version of the upstream Helm chart"
   type = string
-  default = "57.0.2"
+  default = "57.1.0"
 }
 
 variable prometheus_storage_size {
