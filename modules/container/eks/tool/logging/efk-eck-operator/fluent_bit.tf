@@ -1,4 +1,5 @@
 locals {
+  fluent_bit_release_name = "${var.helm_release_name}-fluent-bit"
   es_certificates_mount_path = "/var/elasticsearch/certs"
   # render helm chart values since direct passing of values does not work in all cases
   fluent_bit_values = <<EOT
@@ -8,7 +9,7 @@ locals {
 kind: DaemonSet
 
 nameOverride: ""
-fullnameOverride: ""
+fullnameOverride: "${local.fluent_bit_release_name}"
 
 serviceAccount:
   create: true
@@ -50,27 +51,9 @@ service:
 
 serviceMonitor:
   enabled: ${var.prometheus_operator_enabled}
-  # namespace: monitoring
-  # interval: 10s
-  # scrapeTimeout: 10s
-  # selector:
-  #  prometheus: my-prometheus
 
 prometheusRule:
   enabled: false
-  # namespace: ""
-  # additionnalLabels: {}
-  # rules:
-  # - alert: NoOutputBytesProcessed
-  #   expr: rate(fluentbit_output_proc_bytes_total[5m]) == 0
-  #   annotations:
-  #     message: |
-  #       Fluent Bit instance {{ $labels.instance }}'s output plugin {{ $labels.name }} has not processed any
-  #       bytes for at least 15 minutes.
-  #     summary: No Output Bytes Processed
-  #   for: 15m
-  #   labels:
-  #     severity: critical
 
 dashboards:
   enabled: false
@@ -369,7 +352,7 @@ EOT
 resource helm_release fluent_bit {
   chart = "fluent-bit"
   version = var.fluentbit_helm_chart_version
-  name = "fluent-bit"
+  name = local.fluent_bit_release_name
   dependency_update = true
   atomic = true
   cleanup_on_fail = true

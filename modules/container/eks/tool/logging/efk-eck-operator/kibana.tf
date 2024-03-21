@@ -1,46 +1,16 @@
 locals {
   actual_kibana_version = var.kibana_version != "" ? var.kibana_version : var.elasticsearch_version
+  kibana_release_name = "${var.helm_release_name}-kibana"
   # render helm chart values since direct passing of values does not work in all cases
   kibana_values = <<EOT
----
-# Default values for eck-kibana.
-# This is a YAML-formatted file.
-
-# Overridable names of the Kibana resource.
-# By default, this is the Release name set for the chart,
-# followed by 'eck-kibana'.
-#
-# nameOverride will override the name of the Chart with the name set here,
-# so nameOverride: quickstart, would convert to '{{ Release.name }}-quickstart'
-#
-# nameOverride: "quickstart"
-#
-# fullnameOverride will override both the release name, and the chart name,
-# and will name the Kibana resource exactly as specified.
-#
-# fullnameOverride: "quickstart"
-
-# Version of Kibana.
-#
+fullnameOverride: "${local.kibana_release_name}"
 version: ${local.actual_kibana_version}
-
-# Labels that will be applied to Kibana.
-#
 labels: {}
-
-# Annotations that will be applied to Kibana.
-#
 annotations: {}
-
 spec:
-  # Count of Kibana replicas to create.
-  #
   count: 1
-
-  # Reference to ECK-managed Elasticsearch resource.
-  #
   elasticsearchRef:
-    name: log-elasticsearch-eck-elasticsearch
+    name: ${local.elasticsearch_release_name}
     # Optional namespace reference to Elasticsearch resource.
     # If not specified, then the namespace of the Kibana resource
     # will be assumed.
@@ -125,7 +95,7 @@ EOT
 
 resource helm_release kibana {
   chart = "${path.module}/resources/helm/eck-kibana"
-  name = "log-kibana"
+  name = local.kibana_release_name
   dependency_update = true
   atomic = false
   cleanup_on_fail = false

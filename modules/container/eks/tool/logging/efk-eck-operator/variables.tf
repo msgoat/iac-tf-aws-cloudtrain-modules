@@ -117,13 +117,13 @@ variable "jaeger_agent_port" {
 variable "fluentbit_helm_chart_version" {
   description = "Version number of the upstream FluentBit helm chart"
   type = string
-  default = "0.39.0"
+  default = "0.44.0"
 }
 
 variable "elasticsearch_version" {
   description = "Version of elastic search to deploy"
   type = string
-  default = "8.10.4"
+  default = "8.12.2"
 }
 
 variable "elasticsearch_storage_class" {
@@ -135,7 +135,7 @@ variable "elasticsearch_storage_class" {
 variable "elasticsearch_storage_size" {
   description = "Kubernetes storage size in GB to use for elastic search's persistent volume claims"
   type = number
-  default = 32
+  default = 8
 }
 
 variable "kibana_version" {
