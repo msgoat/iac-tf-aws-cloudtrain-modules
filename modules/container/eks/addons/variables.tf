@@ -130,3 +130,22 @@ variable "addon_eck_operator_enabled" {
   type        = bool
   default     = true
 }
+
+variable "opentelemetry_enabled" {
+  description = "Controls if OpenTelemetry support should be enabled"
+  type        = bool
+  default     = false
+}
+
+variable "opentelemetry_collector_host" {
+  description = "Host name of the OpenTelemetry collector endpoint; required if `opentelemetry_enabled` is true"
+  type        = string
+  default     = ""
+}
+
+variable "opentelemetry_collector_port" {
+  description = "Port number of the OpenTelemetry collector endpoint; required if `opentelemetry_enabled` is true"
+  type        = number
+  default     = 0
+}
+

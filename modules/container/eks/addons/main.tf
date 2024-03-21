@@ -92,6 +92,9 @@ module "ingress_nginx" {
   loadbalancer_id              = var.loadbalancer_id
   loadbalancer_target_group_id = var.loadbalancer_target_group_id
   host_names                   = var.host_names
+  opentelemetry_enabled        = var.opentelemetry_enabled
+  opentelemetry_collector_host = var.opentelemetry_collector_host
+  opentelemetry_collector_port = var.opentelemetry_collector_port
   depends_on                   = [module.cert_manager]
 }
 
