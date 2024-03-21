@@ -1,11 +1,12 @@
 locals {
+  helm_release_name = var.helm_release_name
   actual_replica_count = var.ensure_high_availability && var.replica_count < 2 ? 2 : var.replica_count
   prometheus_stack_values = <<EOT
 # Custom values for kube-prometheus-stack.
 # The default values can be found at: https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/README.md
 nameOverride: ""
 namespaceOverride: ""
-fullnameOverride: ""
+fullnameOverride: "${local.helm_release_name}"
 
 commonLabels: {}
 
