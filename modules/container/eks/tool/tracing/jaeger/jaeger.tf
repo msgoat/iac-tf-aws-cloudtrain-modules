@@ -63,54 +63,7 @@ elasticsearch:
     storageClassName: ${var.elasticsearch_storage_class}
 
 agent:
-  podSecurityContext: {}
-  securityContext: {}
-  enabled: true
-  annotations: {}
-  imagePullSecrets: []
-  pullPolicy: IfNotPresent
-  cmdlineParams: {}
-  extraEnv: []
-  daemonset:
-    useHostPort: false
-    updateStrategy: {}
-  service:
-    type: ClusterIP
-    zipkinThriftPort: 5775
-    compactPort: 6831
-    binaryPort: 6832
-    samplingPort: 5778
-  resources:
-    limits:
-      cpu: ${local.jaeger_agent_cpu_limit}
-      memory: ${local.jaeger_agent_memory_limit}
-    requests:
-      cpu: ${local.jaeger_agent_cpu_request}
-      memory: ${local.jaeger_agent_memory_request}
-  serviceAccount:
-    create: true
-    automountServiceAccountToken: false
-    name:
-    annotations: {}
-  nodeSelector: {}
-%{ if var.node_group_workload_class != "" ~}
-# It's OK to be deployed to the tools pool, too
-  tolerations:
-    - key: "group.msg.cloud.kubernetes/workload"
-      operator: "Equal"
-      value: ${var.node_group_workload_class}
-      effect: "NoSchedule"
-%{ endif ~}
-  podAnnotations: {}
-  podLabels: {}
-  extraSecretMounts: []
-  extraConfigmapMounts: []
-  useHostNetwork: false
-  dnsPolicy: ClusterFirst
-  priorityClassName: ""
-  initContainers: []
-  serviceMonitor:
-    enabled: ${var.prometheus_operator_enabled}
+  enabled: false # Jaeger agent is deprecated since adoption of OpenTelemetry standard
 
 collector:
   podSecurityContext: {}
@@ -124,9 +77,7 @@ collector:
   cmdlineParams:
     es.tls.enabled: "true"
     es.tls.ca: "/tls/ca.crt"
-    # need to fallback ES client to ES 7 level since Jaeger cannot work with ES 8 out of the box
-    es.version: 7
-    es.create-index-templates: "false"
+    es.create-index-templates: "true"
 %{ else ~}
   cmdlineParams: {}
 %{ endif ~}
@@ -210,7 +161,6 @@ collector:
     metricRelabelings: []
 
 query:
-  enabled: true
   basePath: "${var.jaeger_path}"
   oAuthSidecar:
     enabled: false
@@ -248,8 +198,6 @@ query:
   cmdlineParams:
     es.tls.enabled: "true"
     es.tls.ca: "/tls/ca.crt"
-    # need to fallback ES client to ES 7 level since Jaeger cannot work with ES 8 out of the box
-    es.version: 7
     es.create-index-templates: "false"
 %{ else ~}
   cmdlineParams: {}
