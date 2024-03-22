@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 ### Fixed
 
+## [3.1.0] - 2024-03-21
+### Changed
+- container/eks/addon/ingress_nginx: opentelemetry configuration is actually passed through now
+- container/eks/tool/logging/efk-eck-oerator: added variable elasticsearch_cluster_size to parameterize number of nodes
+- container/eks/tool/monitoring/kube-prometheus-stack: upgraded to helm chart version 57.1.0
+- container/eks/tool/monitoring/kube-prometheus-stack: consolidated Helm release and Kubernetes resource names
+- container/eks/tool/logging/efk-eck-operator: reworked module
+- container/eks/tool/logging/efk-eck-operator: consolidated Helm release and Kubernetes resource names 
+
 ## [3.0.0] - 2024-03-20
 ### Changed
 - Reworked all EKS related modules
