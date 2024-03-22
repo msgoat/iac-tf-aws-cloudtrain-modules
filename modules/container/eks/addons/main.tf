@@ -95,7 +95,7 @@ module "ingress_nginx" {
   opentelemetry_enabled        = var.opentelemetry_enabled
   opentelemetry_collector_host = var.opentelemetry_collector_host
   opentelemetry_collector_port = var.opentelemetry_collector_port
-  depends_on                   = [module.cert_manager]
+  depends_on                   = [module.cert_manager, module.ingress_aws]
 }
 
 locals {
