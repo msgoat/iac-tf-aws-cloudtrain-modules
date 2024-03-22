@@ -28,31 +28,31 @@ variable "common_tags" {
   type        = map(string)
 }
 
-variable "eks_cluster_name" {
-  description = "Name of the target AWS EKS cluster"
+variable "eks_cluster_id" {
+  description = "Unique identifier of the target AWS EKS cluster"
   type        = string
 }
 
 variable "kubernetes_namespace_name" {
   description = "Name of the Kubernetes namespace which should host the metrics-server"
-  type = string
-  default = "aws-system"
+  type        = string
+  default     = "aws-system"
 }
 
 variable "helm_release_name" {
   description = "Name of the Helm release"
-  type = string
-  default = "aws-cluster-autoscaler"
+  type        = string
+  default     = "aws-cluster-autoscaler"
 }
 
 variable "helm_chart_version" {
   description = "Version of the Helm chart"
-  type = string
-  default = "9.29.4"
+  type        = string
+  default     = "9.29.4"
 }
 
 variable "ensure_high_availability" {
   description = "Controls if a high availability of this service should be ensured by running at least two pods spread across AZs and nodes"
-  type = bool
-  default = true
+  type        = bool
+  default     = true
 }

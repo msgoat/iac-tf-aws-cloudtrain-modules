@@ -28,27 +28,25 @@ variable "common_tags" {
   type        = map(string)
 }
 
-variable "eks_cluster_name" {
-  description = "Fully qualified name of the AWS EKS cluster to deploy to"
+variable "eks_cluster_id" {
+  description = "Unique identifier of the AWS EKS cluster to deploy to"
   type        = string
+}
+
+variable "kubernetes_cluster_architecture" {
+  description = "Processor architecture of the worker nodes of the target AWS EKS cluster; allowed values are: `X86_64` (default), `ARM_64`"
+  type        = string
+  default     = "X86_64"
+  validation {
+    condition     = var.kubernetes_cluster_architecture == "X86_64" || var.kubernetes_cluster_architecture == "ARM_64"
+    error_message = "The kubernetes_cluster_architecture must be either `X86_64` (Intel-based 64 bit) or `ARM_64` (ARM-based 64 bit)"
+  }
 }
 
 variable "kubernetes_namespace_name" {
   description = "Name of the Kubernetes namespace to deploy to"
   type        = string
   default     = "ingress-nginx"
-}
-
-variable "helm_release_name" {
-  description = "Name of the Helm release which deploys NGINX"
-  type        = string
-  default     = "ingress-nginx"
-}
-
-variable "helm_chart_version" {
-  description = "Version of the Helm chart which deploys NGINX"
-  type        = string
-  default     = "4.10.0"
 }
 
 variable "kubernetes_ingress_class_name" {
@@ -61,6 +59,18 @@ variable "kubernetes_default_ingress_class" {
   description = "Controls if this ingress controller is the default ingress controller on this cluster; default: false"
   type        = bool
   default     = false
+}
+
+variable "helm_release_name" {
+  description = "Name of the Helm release which deploys NGINX"
+  type        = string
+  default     = "ingress-nginx"
+}
+
+variable "helm_chart_version" {
+  description = "Version of the Helm chart which deploys NGINX"
+  type        = string
+  default     = "4.10.0"
 }
 
 variable "replica_count" {

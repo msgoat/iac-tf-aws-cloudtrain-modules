@@ -1,5 +1,5 @@
 locals {
-  target_group_name_long  = "tg-${var.eks_cluster_name}-nginx"
+  target_group_name_long  = "tg-${data.aws_eks_cluster.given.name}-nginx"
   target_group_name_short = "tg-${var.solution_fqn}-nginx"
   target_group_name       = length(local.target_group_name_long) <= 32 ? local.target_group_name_long : local.target_group_name_short
   target_host_names       = var.load_balancer_strategy == "SERVICE_VIA_TARGET_GROUP_BINDING" ? var.host_names : []

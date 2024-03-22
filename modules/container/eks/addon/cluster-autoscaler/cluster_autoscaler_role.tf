@@ -1,11 +1,11 @@
 locals {
-  autoscaler_role_name = "role-${var.eks_cluster_name}-autoscaler"
+  autoscaler_role_name   = "role-${var.eks_cluster_name}-autoscaler"
   autoscaler_policy_name = "policy-${var.eks_cluster_name}-autoscaler"
 }
 
 // Create a dedicated IAM role to be attached to the Kubernetes service account of the cluster autoscaler
-resource aws_iam_role cluster_autoscaler {
-  name = local.autoscaler_role_name
+resource "aws_iam_role" "cluster_autoscaler" {
+  name               = local.autoscaler_role_name
   assume_role_policy = <<POLICY
 {
   "Version": "2012-10-17",
@@ -31,9 +31,9 @@ POLICY
   }, local.module_common_tags)
 }
 
-resource aws_iam_role_policy cluster_autoscaler {
-  name = local.autoscaler_policy_name
-  role = aws_iam_role.cluster_autoscaler.name
+resource "aws_iam_role_policy" "cluster_autoscaler" {
+  name   = local.autoscaler_policy_name
+  role   = aws_iam_role.cluster_autoscaler.name
   policy = <<POLICY
 {
     "Version": "2012-10-17",

@@ -1,5 +1,5 @@
 locals {
-  helm_chart_name = "cluster-autoscaler"
+  helm_chart_name   = "cluster-autoscaler"
   autoscaler_values = <<EOT
 replicaCount: 2
 autoDiscovery:
@@ -96,7 +96,7 @@ serviceMonitor:
   # serviceMonitor.path -- The path to scrape for metrics; autoscaler exposes `/metrics` (this is standard)
   path: /metrics
 
-%{ if var.ensure_high_availability ~}
+%{if var.ensure_high_availability~}
 topologySpreadConstraints:
 - labelSelector:
     matchLabels:
@@ -112,9 +112,9 @@ topologySpreadConstraints:
   topologyKey: kubernetes.io/hostname
   maxSkew: 1
   whenUnsatisfiable: ScheduleAnyway
-%{ else ~}
+%{else~}
 topologySpreadConstraints: []
-%{ endif ~}
+%{endif~}
 EOT
 }
 
@@ -128,6 +128,6 @@ resource "helm_release" "autoscaler" {
   cleanup_on_fail   = true
   namespace         = var.kubernetes_namespace_name
   create_namespace  = true
-  values            = [ local.autoscaler_values ]
-  depends_on        = [ aws_iam_role_policy.cluster_autoscaler ]
+  values            = [local.autoscaler_values]
+  depends_on        = [aws_iam_role_policy.cluster_autoscaler]
 }

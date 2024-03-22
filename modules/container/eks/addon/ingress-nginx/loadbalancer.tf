@@ -1,5 +1,5 @@
 locals {
-  long_alb_name  = "alb-${var.eks_cluster_name}"
+  long_alb_name  = "alb-${data.aws_eks_cluster.given.name}"
   short_alb_name = "alb-eks-${random_id.alb.hex}"
   alb_name       = length(local.long_alb_name) <= 32 ? local.long_alb_name : local.short_alb_name
 }

@@ -22,16 +22,16 @@ data:
       - system:masters
       rolearn: ${aws_iam_role.eks_admin.arn}
       username: eks-admin
-%{ for r in data.aws_iam_role.given ~}
+%{for r in data.aws_iam_role.given~}
     - groups:
       - system:masters
       rolearn: ${r.arn}
       username: ${r.name}
-%{ endfor ~}
+%{endfor~}
 YAML
 }
 
-resource kubectl_manifest aws_auth {
-  yaml_body = local.aws_auth_value
+resource "kubectl_manifest" "aws_auth" {
+  yaml_body  = local.aws_auth_value
   apply_only = true
 }

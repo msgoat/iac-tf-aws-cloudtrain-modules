@@ -28,20 +28,25 @@ variable "common_tags" {
   type        = map(string)
 }
 
+variable "eks_cluster_id" {
+  description = "Unique identifier of the target AWS EKS cluster"
+  type        = string
+}
+
 variable "kubernetes_namespace_name" {
   description = "Name of the Kubernetes namespace which should host the metrics-server"
-  type = string
-  default = "kube-system"
+  type        = string
+  default     = "kube-system"
 }
 
 variable "helm_release_name" {
   description = "Name of the Helm release"
-  type = string
-  default = "metrics-server"
+  type        = string
+  default     = "metrics-server"
 }
 
 variable "helm_chart_version" {
   description = "Version of the Helm chart"
-  type = string
-  default = "3.9.0"
+  type        = string
+  default     = "3.9.0"
 }

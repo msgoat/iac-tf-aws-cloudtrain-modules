@@ -28,7 +28,7 @@ resource "aws_iam_role" "eks_admin" {
 }
 POLICY
   tags = merge({
-    Name    = local.eks_admin_role_name
+    Name = local.eks_admin_role_name
   }, local.module_common_tags)
 }
 

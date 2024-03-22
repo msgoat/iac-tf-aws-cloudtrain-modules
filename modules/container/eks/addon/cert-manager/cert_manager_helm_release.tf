@@ -64,12 +64,12 @@ strategy: {}
   #   maxSurge: 0
   #   maxUnavailable: 1
 
-%{ if local.actual_replica_count > 1 ~}
+%{if local.actual_replica_count > 1~}
 podDisruptionBudget:
   enabled: true
   minAvailable:
   maxUnavailable: 1
-%{ endif ~}
+%{endif~}
 
 # Comma separated list of feature gates that should be enabled on the
 # controller pod & webhook pod.

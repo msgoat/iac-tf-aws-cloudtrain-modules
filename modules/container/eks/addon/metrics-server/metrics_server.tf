@@ -156,5 +156,5 @@ resource "helm_release" "metrics_server" {
   atomic            = true
   cleanup_on_fail   = true
   namespace         = var.kubernetes_namespace_name
-  values            = [ local.metrics_server_values ]
+  values            = [local.metrics_server_values]
 }

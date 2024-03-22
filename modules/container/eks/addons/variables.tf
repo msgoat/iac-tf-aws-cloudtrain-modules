@@ -28,9 +28,19 @@ variable "common_tags" {
   type        = map(string)
 }
 
-variable "eks_cluster_name" {
-  description = "Name of the target AWS EKS cluster"
+variable "eks_cluster_id" {
+  description = "Unique identifier of the target AWS EKS cluster"
   type        = string
+}
+
+variable "kubernetes_cluster_architecture" {
+  description = "Processor architecture of the worker nodes of the target AWS EKS cluster; allowed values are: `X86_64` (default), `ARM_64`"
+  type        = string
+  default     = "X86_64"
+  validation {
+    condition     = var.kubernetes_cluster_architecture == "X86_64" || var.kubernetes_cluster_architecture == "ARM_64"
+    error_message = "The kubernetes_cluster_architecture must be either `X86_64` (Intel-based 64 bit) or `ARM_64` (ARM-based 64 bit)"
+  }
 }
 
 variable "hosted_zone_name" {

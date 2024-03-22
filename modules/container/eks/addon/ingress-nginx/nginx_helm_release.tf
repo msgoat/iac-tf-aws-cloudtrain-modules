@@ -234,6 +234,9 @@ defaultBackend:
   enabled: true
   name: defaultbackend
   image:
+%{if var.kubernetes_cluster_architecture == "ARM_64"~}
+    image: defaultbackend-arm64
+%{endif~}
     runAsUser: 65534
     runAsNonRoot: true
     readOnlyRootFilesystem: true
