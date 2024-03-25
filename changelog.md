@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 ### Fixed
 
+## [3.2.0] - 2024-03-25
+### Changed
+- container/eks/addon/*: replaced eks_cluster_name with eks_cluster_id to express a hard dependency
+- container/eks/tool/*: replaced eks_cluster_name with eks_cluster_id to express a hard dependency
+
 ## [3.1.0] - 2024-03-21
 ### Changed
 - container/eks/addon/ingress_nginx: opentelemetry configuration is actually passed through now
