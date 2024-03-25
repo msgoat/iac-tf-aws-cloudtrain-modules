@@ -1,6 +1,6 @@
 locals {
-  controller_role_name   = "role-${var.eks_cluster_name}-aws-lbc"
-  controller_policy_name = "policy-${var.eks_cluster_name}-aws-lbc"
+  controller_role_name   = "role-${data.aws_eks_cluster.given.name}-aws-lbc"
+  controller_policy_name = "policy-${data.aws_eks_cluster.given.name}-aws-lbc"
   service_account_name   = var.helm_release_name == "aws-load-balancer-controller" ? var.helm_release_name : "${var.helm_release_name}-aws-load-balancer-controller"
 }
 

@@ -1,6 +1,6 @@
 locals {
-  cert_manager_role_name   = "role-${var.eks_cluster_name}-cert-manager"
-  cert_manager_policy_name = "policy-${var.eks_cluster_name}-cert-manager"
+  cert_manager_role_name   = "role-${data.aws_eks_cluster.given.name}-cert-manager"
+  cert_manager_policy_name = "policy-${data.aws_eks_cluster.given.name}-cert-manager"
 }
 
 // Create a dedicated IAM role to be attached to the Kubernetes service account of the AWS Load Balancer Controller

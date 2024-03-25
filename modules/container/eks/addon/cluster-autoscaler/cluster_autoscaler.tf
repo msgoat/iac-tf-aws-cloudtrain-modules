@@ -3,7 +3,7 @@ locals {
   autoscaler_values = <<EOT
 replicaCount: 2
 autoDiscovery:
-  clusterName: ${var.eks_cluster_name}
+  clusterName: ${data.aws_eks_cluster.given.name}
 
 # awsRegion -- AWS region (required if `cloudProvider=aws`)
 awsRegion: ${var.region_name}

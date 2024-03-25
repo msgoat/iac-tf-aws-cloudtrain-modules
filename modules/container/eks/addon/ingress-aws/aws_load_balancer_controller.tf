@@ -80,7 +80,7 @@ additionalLabels: {}
 
 enableCertManager: ${var.cert_manager_enabled}
 
-clusterName: ${var.eks_cluster_name}
+clusterName: ${data.aws_eks_cluster.given.name}
 
 cluster:
   dnsDomain: cluster.local

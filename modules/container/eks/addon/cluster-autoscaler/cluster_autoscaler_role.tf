@@ -1,6 +1,6 @@
 locals {
-  autoscaler_role_name   = "role-${var.eks_cluster_name}-autoscaler"
-  autoscaler_policy_name = "policy-${var.eks_cluster_name}-autoscaler"
+  autoscaler_role_name   = "role-${data.aws_eks_cluster.given.name}-autoscaler"
+  autoscaler_policy_name = "policy-${data.aws_eks_cluster.given.name}-autoscaler"
 }
 
 // Create a dedicated IAM role to be attached to the Kubernetes service account of the cluster autoscaler
@@ -66,7 +66,7 @@ resource "aws_iam_role_policy" "cluster_autoscaler" {
             "Condition": {
                 "StringEquals": {
                     "autoscaling:ResourceTag/k8s.io/cluster-autoscaler/enabled": "true",
-                    "aws:ResourceTag/k8s.io/cluster-autoscaler/${var.eks_cluster_name}": "owned"
+                    "aws:ResourceTag/k8s.io/cluster-autoscaler/${data.aws_eks_cluster.given.name}": "owned"
                 }
             }
         }
