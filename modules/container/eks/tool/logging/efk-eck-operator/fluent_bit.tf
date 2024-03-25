@@ -195,7 +195,7 @@ config:
         Port               ${local.elasticsearch_service_port}
         Type               _doc
         Logstash_Format    On
-        Logstash_Prefix    k8s-${var.eks_cluster_name}
+        Logstash_Prefix    k8s-${data.aws_eks_cluster.given.name}
         Time_Key           @flb-timestamp
         Generate_ID        On
         Replace_Dots       On
@@ -217,7 +217,7 @@ config:
         Port               ${local.elasticsearch_service_port}
         Type               _doc
         Logstash_Format    On
-        Logstash_Prefix    sys-${var.eks_cluster_name}
+        Logstash_Prefix    sys-${data.aws_eks_cluster.given.name}
         Time_Key           @flb-timestamp
         Generate_ID        On
         Replace_Dots       On
@@ -239,7 +239,7 @@ config:
         Port               ${local.elasticsearch_service_port}
         Type               _doc
         Logstash_Format    On
-        Logstash_Prefix    tools-${var.eks_cluster_name}
+        Logstash_Prefix    tools-${data.aws_eks_cluster.given.name}
         Time_Key           @flb-timestamp
         Generate_ID        On
         Replace_Dots       On
@@ -261,7 +261,7 @@ config:
         Port               ${local.elasticsearch_service_port}
         Type               _doc
         Logstash_Format    On
-        Logstash_Prefix    apps-${var.eks_cluster_name}
+        Logstash_Prefix    apps-${data.aws_eks_cluster.given.name}
         Time_Key           @flb-timestamp
         Generate_ID        On
         Replace_Dots       On

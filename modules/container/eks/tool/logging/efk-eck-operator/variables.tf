@@ -23,8 +23,8 @@ variable common_tags {
   type = map(string)
 }
 
-variable eks_cluster_name {
-  description = "Name of an AWS EKS cluster"
+variable eks_cluster_id {
+  description = "Unique identifier of an AWS EKS cluster"
   type = string
 }
 
