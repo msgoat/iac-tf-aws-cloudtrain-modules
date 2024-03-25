@@ -28,8 +28,8 @@ variable "common_tags" {
   type        = map(string)
 }
 
-variable "eks_cluster_name" {
-  description = "Fully qualified name of the AWS EKS cluster to deploy to"
+variable "eks_cluster_id" {
+  description = "Unique identifier of the AWS EKS cluster to deploy to"
   type        = string
 }
 
