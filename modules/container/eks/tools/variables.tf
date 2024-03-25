@@ -36,24 +36,17 @@ variable "eks_cluster_id" {
 variable "kubernetes_ingress_class_name" {
   description = "Name of the ingress class to be used to expose any tool"
   type        = string
-  default     = "nginx" # @TODO: pass from add-on ingress-nginx
 }
 
 variable "kubernetes_ingress_controller_type" {
   description = "Type of the ingress controller to be used to expose Grafana UI and Prometheus UI; possible values are: `NGINX` or `TRAEFIK`"
   type        = string
-  default     = "NGINX" # @TODO: pass from add-on ingress-nginx
 }
 
 variable "kubernetes_storage_class_name" {
   description = "Name of the storage class to be used for all persistence volume claims"
   type        = string
   default     = "ebs-csi-gp3" # @TODO: pass from add-on aws-ebs-csi-driver
-}
-
-variable "domain_name" {
-  description = "Domain name of all tools"
-  type        = string # @TODO: replace with specific tool domain names
 }
 
 variable "prometheus_operator_enabled" {
@@ -159,10 +152,30 @@ variable "cert_manager_cluster_issuer_name" {
   default     = ""
 }
 
+variable kibana_host_name {
+  description = "Fully qualified hostname used to route traffic to Kibana"
+  type = string
+}
+
+variable kibana_path {
+  description = "Path used to route traffic to Kibana; must start with a slash (`/`)"
+  type = string
+}
+
 variable "jaeger_enabled" {
   description = "Controls if jaeger is installed and support should be enabled"
   type        = bool
   default     = false
+}
+
+variable jaeger_host_name {
+  description = "Fully qualified hostname used to route traffic to the Jaeger UI"
+  type = string
+}
+
+variable jaeger_path {
+  description = "Path used to route traffic to the Jaeger UI"
+  type = string
 }
 
 variable "jaeger_agent_host" {
