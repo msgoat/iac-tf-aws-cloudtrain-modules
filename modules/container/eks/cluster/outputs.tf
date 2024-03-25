@@ -1,5 +1,10 @@
-output "eks_cluster_arn" {
+output "eks_cluster_id" {
   description = "Unique identifier of the AWS EKS cluster"
+  value       = aws_eks_cluster.control_plane.id
+}
+
+output "eks_cluster_arn" {
+  description = "Unique ARN of the AWS EKS cluster"
   value       = aws_eks_cluster.control_plane.arn
 }
 
