@@ -38,8 +38,8 @@ variable "alternative_domain_names" {
   type        = list(string)
 }
 
-variable "hosted_zone_name" {
-  description = "Name of a Route53 hosted zone which manages all DNS records for the given `domain_name`."
+variable "hosted_zone_id" {
+  description = "Unique identifier of a Route53 hosted zone which manages all DNS records for the given `domain_name`."
   type        = string
 }
 

@@ -19,7 +19,7 @@ resource aws_acm_certificate cert {
 
 # retrieve the hosted zones for all non-wildcard host names
 data aws_route53_zone hosted_zone {
-  name = var.hosted_zone_name
+  zone_id = var.hosted_zone_id
   private_zone = false
 }
 
