@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 ### Fixed
 
+## [3.3.0] - 2024-04-08
+### Changed
+- dns/public-hosted-zone: added new module
+- terraform/remote-state: reworked output of terraform/terragrunt backend configuration
+
 ## [3.2.0] - 2024-03-25
 ### Changed
 - container/eks/addon/*: replaced eks_cluster_name with eks_cluster_id to express a hard dependency
