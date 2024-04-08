@@ -31,13 +31,32 @@ data "aws_caller_identity" "current" {
 }
 
 locals {
-  terraform_backend_file = templatefile("${path.module}/resources/terraform_backend.template.tf", {
-    tf_s3_bucket_name      = local.s3_bucket_name
-    tf_dynamodb_table_name = local.dynamodb_table_name
-    tf_state_key_name      = "${var.solution_name}/${var.solution_stage}/terraform.tfstate"
-  })
-  terragrunt_remote_state_block = templatefile("${path.module}/resources/terragrunt_remote_state_block.template.hcl", {
-    tf_s3_bucket_name      = local.s3_bucket_name
-    tf_dynamodb_table_name = local.dynamodb_table_name
-  })
+  terraform_backend_file = <<EOT
+terraform {
+  backend "s3" {
+    bucket = "${local.s3_bucket_name}"
+    dynamodb_table = "${local.dynamodb_table_name}"
+    key = "${var.solution_name}/${var.solution_stage}/terraform.tfstate"
+  }
+}
+EOT
+  terraform_backend_config = <<EOT
+region = "${var.region_name}"
+bucket = "${local.s3_bucket_name}"
+dynamodb_table = "${local.dynamodb_table_name}"
+EOT
+  terragrunt_remote_state_block = <<EOT
+remote_state {
+  backend = "s3"
+  generate = {
+    path = "backend.tf"
+    if_exists = "overwrite"
+  }
+  config = {
+    bucket = "${local.s3_bucket_name}"
+    dynamodb_table = "${local.dynamodb_table_name}"
+    key = "$${path_relative_to_include()}/terraform.tfstate"
+  }
+}
+EOT
 }
