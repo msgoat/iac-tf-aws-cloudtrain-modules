@@ -9,9 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 ### Fixed
 
+## [3.4.0] - 2024-04-08
+### Added
+- compute/ec2/instance-types: added new module
+
 ## [3.3.0] - 2024-04-08
-### Changed
+### Added
 - dns/public-hosted-zone: added new module
+### Changed
 - terraform/remote-state: reworked output of terraform/terragrunt backend configuration
 
 ## [3.2.0] - 2024-03-25
