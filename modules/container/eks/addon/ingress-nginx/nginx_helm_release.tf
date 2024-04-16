@@ -215,9 +215,9 @@ controller:
       admissionCert:
         # default to be 1y
         duration: ""
-        # issuerRef:
-        #   name: "issuer"
-        #   kind: "ClusterIssuer"
+        issuerRef:
+          name: ${var.cert_manager_cluster_issuer_name}
+          kind: "ClusterIssuer"
   metrics:
     port: 10254
     portName: metrics
@@ -348,7 +348,6 @@ resource "helm_release" "nginx" {
   cleanup_on_fail   = true
   wait              = true
   create_namespace  = false
-  namespace         = kubernetes_namespace_v1.nginx.metadata[0].name
+  namespace         = var.kubernetes_namespace_owned ? kubernetes_namespace_v1.nginx[0].metadata[0].name : var.kubernetes_namespace_name
   values            = [local.nginx_values]
-  depends_on        = [kubernetes_namespace_v1.nginx]
 }

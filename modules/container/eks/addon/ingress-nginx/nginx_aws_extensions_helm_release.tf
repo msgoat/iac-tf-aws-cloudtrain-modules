@@ -41,7 +41,7 @@ resource "helm_release" "nginx_aws_extensions" {
   cleanup_on_fail   = true
   wait              = true
   create_namespace  = false
-  namespace         = kubernetes_namespace_v1.nginx.metadata[0].name
+  namespace         = var.kubernetes_namespace_owned ? kubernetes_namespace_v1.nginx[0].metadata[0].name : var.kubernetes_namespace_name
   values            = [local.nginx_aws_extensions_values]
-  depends_on        = [kubernetes_namespace_v1.nginx, helm_release.nginx]
+  depends_on        = [helm_release.nginx]
 }

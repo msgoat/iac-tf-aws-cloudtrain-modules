@@ -21,3 +21,8 @@ output "kubernetes_ingress_controller_type" {
   description = "Kubernetes ingress controller type of this ingress controller"
   value       = "NGINX"
 }
+
+output "helm_release_id" {
+  description = "Unique identifier of the helm release managing this ingress controller"
+  value       = helm_release.nginx.id
+}

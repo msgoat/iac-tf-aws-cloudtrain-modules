@@ -49,6 +49,12 @@ variable "kubernetes_namespace_name" {
   default     = "ingress-nginx"
 }
 
+variable "kubernetes_namespace_owned" {
+  description = "Controls if the given Kubernetes namespace will be created and destroyed by this module; default: true"
+  type        = bool
+  default     = true
+}
+
 variable "kubernetes_ingress_class_name" {
   description = "Ingress classname to be assigned to this ingress controller"
   type        = string
@@ -133,6 +139,12 @@ variable "cert_manager_enabled" {
   default     = false
 }
 
+variable "cert_manager_cluster_issuer_name" {
+  description = "Name of the cert-manager cluster issuers used to request certificates; only required if `cert_manager_enabled` is true"
+  type        = string
+  default     = ""
+}
+
 variable "prometheus_operator_enabled" {
   description = "Controls if prometheus operator is installed and pod/service monitors should be enabled"
   type        = bool
@@ -165,6 +177,12 @@ variable "ensure_high_availability" {
 
 variable "node_group_workload_class" {
   description = "Workload class which refers to a specific node group this addon should be hosted on; default unspecified (i.e. workload is running on default node group)"
+  type        = string
+  default     = ""
+}
+
+variable "ingress_aws_helm_release_id" {
+  description = "Optional unique identifier of the helm release which manages the AWS Load Balancer Ingress Controller; only required if `load_balancer_strategy` implies the usage of AWS Load Balancer Ingress Controller"
   type        = string
   default     = ""
 }

@@ -81,6 +81,12 @@ variable "cert_manager_enabled" {
   default     = false
 }
 
+variable "cert_manager_cluster_issuer_name" {
+  description = "Name of the cert-manager cluster issuers used to request certificates; only required if `cert_manager_enabled` is true"
+  type        = string
+  default     = ""
+}
+
 variable "ensure_high_availability" {
   description = "Controls if a high availability of this service should be ensured by running at least two pods spread across AZs and nodes"
   type        = bool

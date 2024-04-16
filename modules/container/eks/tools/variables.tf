@@ -152,14 +152,14 @@ variable "cert_manager_cluster_issuer_name" {
   default     = ""
 }
 
-variable kibana_host_name {
+variable "kibana_host_name" {
   description = "Fully qualified hostname used to route traffic to Kibana"
-  type = string
+  type        = string
 }
 
-variable kibana_path {
+variable "kibana_path" {
   description = "Path used to route traffic to Kibana; must start with a slash (`/`)"
-  type = string
+  type        = string
 }
 
 variable "jaeger_enabled" {
@@ -168,14 +168,14 @@ variable "jaeger_enabled" {
   default     = false
 }
 
-variable jaeger_host_name {
+variable "jaeger_host_name" {
   description = "Fully qualified hostname used to route traffic to the Jaeger UI"
-  type = string
+  type        = string
 }
 
-variable jaeger_path {
+variable "jaeger_path" {
   description = "Path used to route traffic to the Jaeger UI"
-  type = string
+  type        = string
 }
 
 variable "jaeger_agent_host" {

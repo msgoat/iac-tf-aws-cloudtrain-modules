@@ -34,6 +34,7 @@ module "logging" {
   prometheus_operator_enabled        = var.prometheus_operator_enabled
   ensure_high_availability           = var.ensure_high_availability
   node_group_workload_class          = var.node_group_workload_class
+  depends_on                         = [module.monitoring]
 }
 
 module "tracing" {
@@ -52,4 +53,5 @@ module "tracing" {
   prometheus_operator_enabled        = var.prometheus_operator_enabled
   ensure_high_availability           = var.ensure_high_availability
   node_group_workload_class          = var.node_group_workload_class
+  depends_on                         = [module.monitoring]
 }
