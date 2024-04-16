@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 ### Fixed
 
+## [4.0.0] - 2024-04-16
+### Changed
+- completely reworked for building block showcases
+- removed obsolete or deprecated modules
+
 ## [3.4.0] - 2024-04-08
 ### Added
 - compute/ec2/instance-types: added new module
