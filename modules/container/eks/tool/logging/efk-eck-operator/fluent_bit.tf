@@ -62,7 +62,7 @@ resources:
   limits:
     memory: 500Mi
   requests:
-    cpu: 200m
+    cpu: 100m # @TODO: Hack for Automotive Seminar Demo
     memory: 100Mi
 
 %{ if var.node_group_workload_class != "" ~}

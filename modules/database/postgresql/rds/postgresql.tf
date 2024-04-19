@@ -9,7 +9,7 @@ resource aws_db_instance postgresql {
   identifier = local.db_instance_name
   db_name = var.db_database_name
   engine = "postgres"
-  engine_version = var.postgresql_version
+  engine_version = var.db_version
   allow_major_version_upgrade = false
   auto_minor_version_upgrade = true
   instance_class = var.db_instance_class

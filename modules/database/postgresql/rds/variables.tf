@@ -1,8 +1,3 @@
-# variables.tf
-# ---------------------------------------------------------------------------
-# Defines all input variable for this demo.
-# ---------------------------------------------------------------------------
-
 variable region_name {
   description = "The AWS region to deploy into (e.g. eu-central-1)."
   type = string
@@ -62,10 +57,10 @@ variable db_storage_type {
   default = "gp3"
 }
 
-variable postgresql_version {
+variable db_version {
   description = "PostgreSQL version"
   type = string
-  default = "14.7"
+  default = "16.1"
 }
 
 variable vpc_id {
